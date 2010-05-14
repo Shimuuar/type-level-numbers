@@ -1,0 +1,17 @@
+Name:		type-numbers
+Version:	0.0.1
+Cabal-Version:  >= 1.2
+License:	BSD3
+License-File:	LICENSE
+Author:		Alexey Khudyakov
+Homepage:	
+Category:	Data
+Synopsis:	Combinators to create Binary instances. Unfortunately it require patched binary.
+Build-Type:     Simple
+
+Library
+  Build-Depends:   base
+  Exposed-modules: Types.Number.Classes
+                   Types.Number.Nat
+                   Types.Number.Int
+                   Types.Boolean
