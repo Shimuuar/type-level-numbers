@@ -16,7 +16,6 @@ import Types.Number.Classes
 import Types.Number.Nat.Types
 
 import Data.Bits (shiftR)
-import Data.List
 import Language.Haskell.TH
 
 splitToBits :: Integer -> [Int]

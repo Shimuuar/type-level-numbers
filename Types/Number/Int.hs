@@ -1,9 +1,10 @@
-{-# LANGUAGE EmptyDataDecls #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE FlexibleContexts  #-}
-{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE EmptyDataDecls        #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE UndecidableInstances  #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE TemplateHaskell       #-}
 module Types.Number.Int ( ZZ
                         , D1
                         , D0
@@ -13,12 +14,26 @@ module Types.Number.Int ( ZZ
                         ) where
 
 import Types.Number.Classes
+import Types.Number.Int.Types
 
-----------------------------------------------------------------
-data D1 n
-data D0 n
-data Dn n
-data ZZ
+import Language.Haskell.TH
+
+splitToTrits :: Integer -> [Int]
+splitToTrits 0 = []
+splitToTrits x | n == 0 =  0 : splitToTrits  rest
+               | n == 1 =  1 : splitToTrits  rest
+               | n == 2 = -1 : splitToTrits (rest + 1)
+                 where   
+                   (rest,n) = divMod x 3
+
+intT :: Integer -> TypeQ
+intT = foldr appT [t| ZZ |] . map con . splitToTrits
+  where
+    con (-1) = [t| Dn |]
+    con   0 = [t| D0 |]
+    con   1 = [t| D1 |]
+    con   x = error $ "Strange trit: " ++ show x
+
 ----------------------------------------------------------------
 class IntT n where
   toIntZ :: n -> Int
@@ -102,7 +117,7 @@ instance AddN' (Dn n)     ZZ Carry0 where type Add' (Dn n)     ZZ Carry0 = (Dn n
 instance AddN' (D0 n)     ZZ Carry0 where type Add' (D0 n)     ZZ Carry0 = (D0 n)
 instance AddN' (D1 n)     ZZ Carry0 where type Add' (D1 n)     ZZ Carry0 = (D1 n)
 --
-instance AddN'     ZZ     ZZ CarryN where type Add'     ZZ     ZZ CarryN = ZZ
+instance AddN'     ZZ     ZZ CarryN where type Add'     ZZ     ZZ CarryN = Dn ZZ
 instance AddN'     ZZ (Dn n) CarryN where type Add'     ZZ (Dn n) CarryN = Prev (Dn n)
 instance AddN'     ZZ (D0 n) CarryN where type Add'     ZZ (D0 n) CarryN = (Dn n)
 instance AddN'     ZZ (D1 n) CarryN where type Add'     ZZ (D1 n) CarryN = (D0 n)
@@ -110,7 +125,7 @@ instance AddN' (Dn n)     ZZ CarryN where type Add' (Dn n)     ZZ CarryN = Prev 
 instance AddN' (D0 n)     ZZ CarryN where type Add' (D0 n)     ZZ CarryN = (Dn n)
 instance AddN' (D1 n)     ZZ CarryN where type Add' (D1 n)     ZZ CarryN = (D0 n)
 --
-instance AddN'     ZZ     ZZ Carry1 where type Add'     ZZ     ZZ Carry1 = ZZ
+instance AddN'     ZZ     ZZ Carry1 where type Add'     ZZ     ZZ Carry1 = D1 ZZ
 instance AddN'     ZZ (Dn n) Carry1 where type Add'     ZZ (Dn n) Carry1 = (D0 n)
 instance AddN'     ZZ (D0 n) Carry1 where type Add'     ZZ (D0 n) Carry1 = (D1 n)
 instance AddN'     ZZ (D1 n) Carry1 where type Add'     ZZ (D1 n) Carry1 = Next (D1 n)

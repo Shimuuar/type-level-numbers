@@ -17,3 +17,4 @@ Library
                    Types.Number.Int
                    Types.Boolean
   Other-modules:   Types.Number.Nat.Types
+                   Types.Number.Int.Types
