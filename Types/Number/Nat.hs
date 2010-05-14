@@ -53,19 +53,21 @@ instance NormalizedNumber (I n) where type Normalized (I n) = I (Normalized n)
 instance NormalizedNumber (O n) where type Normalized (O n) = AddBit (Normalized n)
          
 ----------------------------------------------------------------
--- Show instances
+-- Show instances.
+-- Nat contexts are used to ensure correctness of numbers.
 instance              Show    Z  where show _ = "[0]"
 instance Nat (O n) => Show (O n) where show n = "["++show (toInt n)++"]"
 instance Nat (I n) => Show (I n) where show n = "["++show (toInt n)++"]"
 
 ----------------------------------------------------------------
--- Next number
+-- Next number.
+-- Number normalization is not required.
 instance                        NextN    Z  where type Next Z = I Z
 instance (Nat (I n),NextN n) => NextN (I n) where type Next (I n) = O (Next n)
 instance (Nat (O n),NextN n) => NextN (O n) where type Next (O n) = I n
 
 ----------------------------------------------------------------
--- Previous number
+-- Previous number.
 instance                             PrevN    (I Z)  where type Prev (I Z)     = Z
 instance (Nat (O n), PrevN (O n)) => PrevN (O (O n)) where type Prev (O (O n)) = I (Prev (O n))
 instance (Nat (O n), PrevN (O n)) => PrevN (I (O n)) where type Prev (I (O n)) = O (O n)
@@ -76,7 +78,7 @@ instance (Nat (I n), PrevN (I n)) => PrevN (I (I n)) where type Prev (I (I n)) =
 ----------------------------------------------------------------
 -- Comparison
 
--- | Join compare results. a is result of comparison of low digits b is
+-- Join compare results. a is result of comparison of low digits b is
 -- result of comparion of higher digits.
 class JoinCompare a b where
     type Join a b :: *
