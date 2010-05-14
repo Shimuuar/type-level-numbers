@@ -121,9 +121,9 @@ instance AddN'    Z  (I n) NoCarry where type Add'    Z  (I n) NoCarry = I n
 -- Recursion termination with carry bit
 instance AddN'    Z     Z    Carry where type Add'    Z   Z      Carry = I Z
 instance AddN' (O n)    Z    Carry where type Add' (O n)  Z      Carry = I n
-instance AddN' (I n)    Z    Carry where type Add' (I n)  Z      Carry = O (Add' n Z Carry)
+instance AddN' (I n)    Z    Carry where type Add' (I n)  Z      Carry = Next (I n)
 instance AddN'    Z  (O n)   Carry where type Add'    Z  (O n)   Carry = I n
-instance AddN'    Z  (I n)   Carry where type Add'    Z  (I n)   Carry = O (Add' Z n Carry)
+instance AddN'    Z  (I n)   Carry where type Add'    Z  (I n)   Carry = Next (I n)
 -- Generic recursion (No carry)
 instance AddN' (O n) (O m) NoCarry where type Add' (O n) (O m) NoCarry = O (Add' n m NoCarry)
 instance AddN' (I n) (O m) NoCarry where type Add' (I n) (O m) NoCarry = I (Add' n m NoCarry)

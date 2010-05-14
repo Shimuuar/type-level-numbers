@@ -19,6 +19,8 @@ module Types.Number.Classes ( -- * Comparison of numbers
                             , nextN
                             , PrevN(..)
                             , prevN
+                            , NegateN(..)
+                            , negateN
                             , AddN(..)
                             , addN
                             , SubN(..)
