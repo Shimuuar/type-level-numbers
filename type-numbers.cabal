@@ -10,8 +10,10 @@ Synopsis:	Combinators to create Binary instances. Unfortunately it require patch
 Build-Type:     Simple
 
 Library
-  Build-Depends:   base
+  Build-Depends:   base,
+                   template-haskell
   Exposed-modules: Types.Number.Classes
                    Types.Number.Nat
                    Types.Number.Int
                    Types.Boolean
+  Other-modules:   Types.Number.Nat.Types

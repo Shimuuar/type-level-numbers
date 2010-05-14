@@ -1,9 +1,10 @@
-{-# LANGUAGE EmptyDataDecls #-}
-{-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE FlexibleContexts  #-}
-{-# LANGUAGE UndecidableInstances #-}
+{-# LANGUAGE EmptyDataDecls        #-}
+{-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE FlexibleContexts      #-}
+{-# LANGUAGE UndecidableInstances  #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE TemplateHaskell       #-}
 module Types.Number.Nat ( I
                         , O
                         , Z
@@ -12,13 +13,24 @@ module Types.Number.Nat ( I
                         ) where
 
 import Types.Number.Classes
+import Types.Number.Nat.Types
 
--- | One bit.
-data I n
--- | Zero bit.
-data O n
--- | Bit stream terminator.
-data Z
+import Data.Bits (shiftR)
+import Data.List
+import Language.Haskell.TH
+
+splitToBits :: Integer -> [Int]
+splitToBits 0 = []
+splitToBits x | odd x     = 1 : splitToBits rest
+              | otherwise = 0 : splitToBits rest
+                where rest = shiftR x 1
+
+natT :: Integer -> TypeQ
+natT = foldr appT [t| Z |] . map con . splitToBits
+  where
+    con 0 = [t| O |]
+    con 1 = [t| I |]
+    con _ = error "Strange bit nor 0 nor 1"
 
 ----------------------------------------------------------------
 -- | Type class for natural numbers
