@@ -25,6 +25,8 @@ module Types.Number.Classes ( -- * Comparison of numbers
                             , subN
                             , MulN(..)
                             , mulN
+                              -- * Special classes
+                            , NormalizedNumber(..)
                             ) where
 
 ----------------------------------------------------------------
@@ -75,8 +77,6 @@ instance (OneOfTwo (Compare n m) IsLesser  IsEqual) => LesserEq n m
 instance (OneOfTwo (Compare n m) IsGreater IsEqual) => GreaterEq n m
 
 ----------------------------------------------------------------
---
-----------------------------------------------------------------
 
 -- | Next number.
 class NextN n where
@@ -92,8 +92,6 @@ class PrevN n where
 prevN :: PrevN n => n -> Prev n
 prevN _ = undefined
 
-----------------------------------------------------------------
---
 ----------------------------------------------------------------
 
 -- | Sum of two numbers.
@@ -116,3 +114,8 @@ class MulN n m where
        
 mulN :: MulN n m => n -> m -> Mul n m
 mulN _ _ = undefined
+
+----------------------------------------------------------------
+
+class NormalizedNumber n where
+    type Normalized n :: *

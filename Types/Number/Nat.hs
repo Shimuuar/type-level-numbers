@@ -43,13 +43,10 @@ instance Number_Is_Denormalized Z => Nat (O Z) where
 
 ----------------------------------------------------------------
 -- Number normalization 
-class NormalizedNumber n where
-    type Normalized n :: *
 
 class    NormBit    n  where type AddBit n :: *
 instance NormBit    Z  where type AddBit    Z  = Z
-instance NormBit (O n) where type AddBit (O n) = (O (O n))
-instance NormBit (I n) where type AddBit (I n) = (O (I n))
+instance NormBit (a b) where type AddBit (a b) = (O (a b))
 
 instance NormalizedNumber    Z  where type Normalized    Z  = Z
 instance NormalizedNumber (I n) where type Normalized (I n) = I (Normalized n)
@@ -196,7 +193,6 @@ instance                           SubN    Z     Z  where type Sub    Z     Z  =
 -- instance SubN' Z (I n) NoBorrow where type Sub' Z (I n) NoBorrow = I n
 -- instance SubN' Z (O n)   Borrow where type Sub' Z (O n)   Borrow = I n
 -- instance SubN' Z (I n)   Borrow where type Sub' Z (I n)   Borrow = O (Sub' Z n Borrow)
-
 -- instance (Nat (O n))            => SubN Z (O n) where type Sub Z (O n) = Normalized (Sub'    Z  (O n) NoBorrow)
 -- instance (Nat (I n))            => SubN Z (I n) where type Sub Z (I n) = Normalized (Sub'    Z  (I n) NoBorrow)
 
