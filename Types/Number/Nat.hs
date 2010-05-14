@@ -54,12 +54,9 @@ instance NormalizedNumber (O n) where type Normalized (O n) = AddBit (Normalized
          
 ----------------------------------------------------------------
 -- Show instances
-instance              Show       Z   where show _ = "[0]"
-instance              Show    (I Z)  where show _ = "[1]"
-instance Nat (O n) => Show (O (O n)) where show n = "["++show (toInt n)++"]"
-instance Nat (O n) => Show (I (O n)) where show n = "["++show (toInt n)++"]"
-instance Nat (I n) => Show (O (I n)) where show n = "["++show (toInt n)++"]"
-instance Nat (I n) => Show (I (I n)) where show n = "["++show (toInt n)++"]"
+instance              Show    Z  where show _ = "[0]"
+instance Nat (O n) => Show (O n) where show n = "["++show (toInt n)++"]"
+instance Nat (I n) => Show (I n) where show n = "["++show (toInt n)++"]"
 
 ----------------------------------------------------------------
 -- Next number
