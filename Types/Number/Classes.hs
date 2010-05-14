@@ -92,6 +92,13 @@ class PrevN n where
 prevN :: PrevN n => n -> Prev n
 prevN _ = undefined
 
+-- | Negate numbers
+class NegateN n where
+    type Negate n :: *
+
+negateN :: NegateN n => n -> Negate n
+negateN _ = undefined
+
 ----------------------------------------------------------------
 
 -- | Sum of two numbers.
