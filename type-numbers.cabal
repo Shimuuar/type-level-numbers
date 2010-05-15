@@ -1,14 +1,16 @@
 Name:		type-numbers
-Version:	0.0.1
+Version:	0.1
 Cabal-Version:  >= 1.2
 License:	BSD3
 License-File:	LICENSE
-Author:		Alexey Khudyakov
+Author:		Alexey Khudyakov <alexey.skladnoy@gmail.com>
 Homepage:	
-Category:	Data
-Synopsis:	Combinators to create Binary instances. Unfortunately it require patched binary.
+Category:	Type System
 Build-Type:     Simple
-
+Synopsis:	
+  Type level numbers (natural and signed integeger) implemented using
+  type families.
+  
 Library
   Build-Depends:   base,
                    template-haskell
