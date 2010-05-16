@@ -4,8 +4,10 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE UndecidableInstances  #-}
-module Types.Number.Classes ( -- * Comparison of numbers
-                              CompareN(..)
+module Types.Number.Classes ( -- * Conversion to values
+                              TypeInt(..)
+                              -- * Comparison of numbers
+                            , CompareN(..)
                             , compareN
                               -- ** Data labels for comparison
                             , IsLesser
@@ -30,6 +32,12 @@ module Types.Number.Classes ( -- * Comparison of numbers
                               -- * Special classes
                             , NormalizedNumber(..)
                             ) where
+
+-- | Type class for conversion type level integral numbers to value
+-- level numbers.
+class TypeInt n where
+    -- | This function is expected to be completely lazy in its argument.
+    toInt :: Integral i => n -> i
 
 ----------------------------------------------------------------
 -- Comparison

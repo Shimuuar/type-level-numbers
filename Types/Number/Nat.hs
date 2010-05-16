@@ -5,10 +5,14 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TemplateHaskell       #-}
-module Types.Number.Nat ( I
+module Types.Number.Nat ( -- * Natural numbers
+                          -- $nat
+                          I
                         , O
                         , Z
                         , Nat(..)
+                          -- * Template haskell utilities
+                        , natT
                         , module Types.Number.Classes
                         ) where
 
@@ -24,36 +28,55 @@ splitToBits x | odd x     = 1 : splitToBits rest
               | otherwise = 0 : splitToBits rest
                 where rest = shiftR x 1
 
+-- | Create type for natural number.
+--
+-- Usage example
+-- > n123 :: $(natT 123)
+-- > n123 = undefined
+-- This require type splices which are supprted by GHC>=6.12.
 natT :: Integer -> TypeQ
-natT = foldr appT [t| Z |] . map con . splitToBits
+natT n | n >= 0    = foldr appT [t| Z |] . map con . splitToBits $ n
+       | otherwise = error "natT: negative number is supplied"
   where
     con 0 = [t| O |]
     con 1 = [t| I |]
-    con _ = error "Strange bit nor 0 nor 1"
+    con _ = error "natT: Strange bit nor 0 nor 1"
 
 ----------------------------------------------------------------
--- | Type class for natural numbers
-class Nat n where
-    -- | Convert type-level natural to ordinary number
-    toInt :: Num i => n -> i
 
-instance              Nat       Z   where toInt _ = 0
-instance              Nat    (I Z)  where toInt _ = 1
-instance Nat (O n) => Nat (O (O n)) where toInt n = 0 + 2 * toInt (cdr n)
-instance Nat (O n) => Nat (I (O n)) where toInt n = 1 + 2 * toInt (cdr n)
-instance Nat (I n) => Nat (O (I n)) where toInt n = 0 + 2 * toInt (cdr n)
-instance Nat (I n) => Nat (I (I n)) where toInt n = 1 + 2 * toInt (cdr n)
+-- $nat
+-- Natural numbers are represented using binary encoding which means
+-- that reasonable large numbers could be represented. With default
+-- context stack depth (20) maximal number is 2^18-1 (262143).
+--
+-- Binary representaion of numbers is not unique. Every number could
+-- have arbitrary number of leading zeroes. To maintain uniqueness of
+-- representation only numbers withoit leading zeroes are valid.
+
+-- | Type class for natural numbers
+class TypeInt n => Nat n
+
+instance                  TypeInt       Z   where toInt _ = 0
+instance                  TypeInt    (I Z)  where toInt _ = 1
+instance TypeInt (O n) => TypeInt (O (O n)) where toInt n = 0 + 2 * toInt (cdr n)
+instance TypeInt (O n) => TypeInt (I (O n)) where toInt n = 1 + 2 * toInt (cdr n)
+instance TypeInt (I n) => TypeInt (O (I n)) where toInt n = 0 + 2 * toInt (cdr n)
+instance TypeInt (I n) => TypeInt (I (I n)) where toInt n = 1 + 2 * toInt (cdr n)
+
+instance              Nat    Z
+instance Nat (O n) => Nat (O n)
+instance Nat (I n) => Nat (I n)
+-- Error reporting
+class    Number_Is_Denormalized a
+instance (Number_Is_Denormalized Z) => TypeInt (O Z) where
+  toInt = error "quench warning"
+instance (Number_Is_Denormalized Z) => Nat (O Z)
 
 cdr :: t a -> a
 cdr _ = undefined
 
--- Error reporing
-class    Number_Is_Denormalized a
-instance Number_Is_Denormalized Z => Nat (O Z) where
-    toInt = error "quench warning"
-
 ----------------------------------------------------------------
--- Number normalization 
+-- Number normalization
 
 class    NormBit    n  where type AddBit n :: *
 instance NormBit    Z  where type AddBit    Z  = Z
@@ -62,7 +85,7 @@ instance NormBit (a b) where type AddBit (a b) = (O (a b))
 instance NormalizedNumber    Z  where type Normalized    Z  = Z
 instance NormalizedNumber (I n) where type Normalized (I n) = I (Normalized n)
 instance NormalizedNumber (O n) where type Normalized (O n) = AddBit (Normalized n)
-         
+
 ----------------------------------------------------------------
 -- Show instances.
 -- Nat contexts are used to ensure correctness of numbers.
@@ -197,7 +220,7 @@ instance (Nat (O n))            => SubN (O n)    Z  where type Sub (O n)    Z  =
 instance (Nat (I n))            => SubN (I n)    Z  where type Sub (I n)    Z  = Normalized (Sub' (I n)    Z  NoBorrow)
 instance                           SubN    Z     Z  where type Sub    Z     Z  = Normalized (Sub'    Z     Z  NoBorrow)
 
--- Error handling 
+-- Error handling
 -- instance SubN' Z    Z    Borrow where type Sub' Z  Z      Borrow = I Z
 -- instance SubN' Z (O n) NoBorrow where type Sub' Z (O n) NoBorrow = O n
 -- instance SubN' Z (I n) NoBorrow where type Sub' Z (I n) NoBorrow = I n
