@@ -16,17 +16,17 @@ module Types.Number.Nat ( -- * Natural numbers
                         , module Types.Number.Classes
                         ) where
 
+import Language.Haskell.TH
+
 import Types.Number.Classes
 import Types.Number.Nat.Types
-
-import Data.Bits (shiftR)
-import Language.Haskell.TH
+import Types.Util
 
 splitToBits :: Integer -> [Int]
 splitToBits 0 = []
 splitToBits x | odd x     = 1 : splitToBits rest
               | otherwise = 0 : splitToBits rest
-                where rest = shiftR x 1
+                where rest = x `div` 2
 
 -- | Create type for natural number.
 --
@@ -71,9 +71,6 @@ class    Number_Is_Denormalized a
 instance (Number_Is_Denormalized Z) => TypeInt (O Z) where
   toInt = error "quench warning"
 instance (Number_Is_Denormalized Z) => Nat (O Z)
-
-cdr :: t a -> a
-cdr _ = undefined
 
 ----------------------------------------------------------------
 -- Number normalization

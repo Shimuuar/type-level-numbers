@@ -29,3 +29,4 @@ Library
                    Types.Boolean
   Other-modules:   Types.Number.Nat.Types
                    Types.Number.Int.Types
+                   Types.Util

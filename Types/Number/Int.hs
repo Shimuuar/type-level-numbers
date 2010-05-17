@@ -13,10 +13,12 @@ module Types.Number.Int ( ZZ
                         , module Types.Number.Classes
                         ) where
 
+import Language.Haskell.TH
+
 import Types.Number.Classes
 import Types.Number.Int.Types
+import Types.Util
 
-import Language.Haskell.TH
 
 splitToTrits :: Integer -> [Int]
 splitToTrits 0 = []
@@ -52,9 +54,6 @@ instance TypeInt (D1 n) => TypeInt (D1 (D1 n)) where toInt n =  1 + 3 * toInt' n
 
 toInt' :: (TypeInt a, Integral i) => t a -> i
 toInt' = toInt . cdr
-
-cdr :: t a -> a
-cdr _ = undefined
 
 -- | Type class for type level integers.
 class IntT n where
