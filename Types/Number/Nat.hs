@@ -63,9 +63,9 @@ instance TypeInt (O n) => TypeInt (I (O n)) where toInt n = 1 + 2 * toInt (cdr n
 instance TypeInt (I n) => TypeInt (O (I n)) where toInt n = 0 + 2 * toInt (cdr n)
 instance TypeInt (I n) => TypeInt (I (I n)) where toInt n = 1 + 2 * toInt (cdr n)
 
-instance              Nat    Z
-instance Nat (O n) => Nat (O n)
-instance Nat (I n) => Nat (I n)
+instance                  Nat    Z
+instance TypeInt (O n) => Nat (O n)
+instance TypeInt (I n) => Nat (I n)
 -- Error reporting
 class    Number_Is_Denormalized a
 instance (Number_Is_Denormalized Z) => TypeInt (O Z) where
