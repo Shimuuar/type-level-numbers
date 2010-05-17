@@ -75,13 +75,13 @@ instance (Number_Is_Denormalized Z) => Nat (O Z)
 ----------------------------------------------------------------
 -- Number normalization
 
-class    NormBit    n  where type AddBit n :: *
-instance NormBit    Z  where type AddBit    Z  = Z
-instance NormBit (a b) where type AddBit (a b) = (O (a b))
+type family   AddBit n :: *
+type instance AddBit    Z  = Z
+type instance AddBit (a b) = (O (a b))
 
-instance NormalizedNumber    Z  where type Normalized    Z  = Z
-instance NormalizedNumber (I n) where type Normalized (I n) = I (Normalized n)
-instance NormalizedNumber (O n) where type Normalized (O n) = AddBit (Normalized n)
+type instance Normalized    Z  = Z
+type instance Normalized (I n) = I (Normalized n)
+type instance Normalized (O n) = AddBit (Normalized n)
 
 ----------------------------------------------------------------
 -- Show instances.

@@ -71,14 +71,14 @@ instance TypeInt (D1 n) => Show (D1 n) where show n = "["++show (toInt n)++":Z]"
 ----------------------------------------------------------------
 -- Number normalization
 
-class    NormBit    n  where type AddBit n :: *
-instance NormBit    ZZ where type AddBit    ZZ = ZZ
-instance NormBit (a b) where type AddBit (a b) = D0 (a b)
+type family   AddBit n :: *
+type instance AddBit    ZZ = ZZ
+type instance AddBit (a b) = D0 (a b)
 
-instance NormalizedNumber     ZZ where type Normalized     ZZ = ZZ
-instance NormalizedNumber (Dn n) where type Normalized (Dn n) = Dn     (Normalized n)
-instance NormalizedNumber (D0 n) where type Normalized (D0 n) = AddBit (Normalized n)
-instance NormalizedNumber (D1 n) where type Normalized (D1 n) = D1     (Normalized n)
+type instance Normalized     ZZ = ZZ
+type instance Normalized (Dn n) = Dn     (Normalized n)
+type instance Normalized (D0 n) = AddBit (Normalized n)
+type instance Normalized (D1 n) = D1     (Normalized n)
 
 ----------------------------------------------------------------
 -- Next Number

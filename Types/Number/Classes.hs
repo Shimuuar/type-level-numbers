@@ -9,13 +9,16 @@ module Types.Number.Classes ( -- * Conversion to values
                               -- * Comparison of numbers
                             , CompareN(..)
                             , compareN
-                              -- ** Data labels for comparison
+                              -- ** Data labels for types comparison
                             , IsLesser
                             , IsEqual
                             , IsGreater
                               -- ** Specialized type classes
+                              -- $comparing
                             , Lesser
                             , LesserEq
+                            , Greater
+                            , GreaterEq
                               -- * Arithmetic operations on numbers
                             , NextN(..)
                             , nextN
@@ -30,7 +33,7 @@ module Types.Number.Classes ( -- * Conversion to values
                             , MulN(..)
                             , mulN
                               -- * Special classes
-                            , NormalizedNumber(..)
+                            , Normalized
                             ) where
 
 -- | Type class for conversion type level integral numbers to value
@@ -62,6 +65,17 @@ instance Show IsGreater where show _  = "IsGreater"
 
 ----------------------------------------------------------------
 
+-- $comparing
+                              
+-- These type classes are meant to be used in contexts to ensure
+-- relations between numbers. For example:
+-- 
+-- > someFunction :: Lesser n m => Data n -> Data m -> Data n
+-- > someFunction = ...
+--
+-- They have generic instances and every number which is instance of
+-- CompareN type class is instance of these type classes.
+
 -- | Numbers n and m are instances of this class if and only is n < m.
 class Lesser n m
 
@@ -82,7 +96,7 @@ instance OneOfTwo a a a
 
 instance (Compare n m ~ IsLesser ) => Lesser n m
 instance (Compare n m ~ IsGreater) => Greater n m
--- Instances for LessEq and GreaterEq are tricker.
+-- Instances for LessEq and GreaterEq are trickier.
 instance (OneOfTwo (Compare n m) IsLesser  IsEqual) => LesserEq n m
 instance (OneOfTwo (Compare n m) IsGreater IsEqual) => GreaterEq n m
 
@@ -134,5 +148,6 @@ mulN _ _ = undefined
 
 ----------------------------------------------------------------
 
-class NormalizedNumber n where
-    type Normalized n :: *
+-- | Usually numbers have non-unique representation. This type family
+-- is canonical representation of number.
+type family Normalized n :: *
