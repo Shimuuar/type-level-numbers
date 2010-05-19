@@ -1,12 +1,11 @@
 {-# LANGUAGE EmptyDataDecls #-}
-module Types.Number.Int.Types ( D1
-                              , D0
-                              , Dn
-                              , ZZ
-                              ) where
+module Types.Number.Int.Types where
   
-  
-data D1 n
-data D0 n
+-- | Digit -1
 data Dn n
+-- | Digit 0
+data D0 n
+-- | Digit 1
+data D1 n
+-- | Digit stream terminator
 data ZZ

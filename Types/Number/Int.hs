@@ -5,11 +5,28 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TemplateHaskell       #-}
-module Types.Number.Int ( ZZ
-                        , D1
-                        , D0
+-- |
+-- Module      : Types.Number.Int
+-- Copyright   : Alexey Khudyakov
+-- License     : BSD3-style (see LICENSE)
+--
+-- Maintainer  : Alexey Khudyakov <alexey.skladnoy@gmail.com>
+-- Stability   : unstable
+-- Portability : unportable (GHC only)
+--
+-- Type level signed integer numbers are implemented using balanced
+-- ternary encoding much in the same way as natural numbers.
+--
+-- Currently following operations are supported: Next, Prev, Add, Sub,
+-- Mul.
+module Types.Number.Int ( -- * Integer numbers
+                          ZZ
                         , Dn
-                        , IntT(..)
+                        , D0
+                        , D1
+                        , IntT
+                          -- * Template haskell utilities
+                        , intT
                         , module Types.Number.Classes
                         ) where
 
@@ -28,6 +45,7 @@ splitToTrits x | n == 0 =  0 : splitToTrits  rest
                  where
                    (rest,n) = divMod x 3
 
+-- | Generate type for integer number.
 intT :: Integer -> TypeQ
 intT = foldr appT [t| ZZ |] . map con . splitToTrits
   where
@@ -55,7 +73,8 @@ instance TypeInt (D1 n) => TypeInt (D1 (D1 n)) where toInt n =  1 + 3 * toInt' n
 toInt' :: (TypeInt a, Integral i) => t a -> i
 toInt' = toInt . cdr
 
--- | Type class for type level integers.
+-- | Type class for type level integers. Only numbers without leading
+-- zeroes are members of the class.
 class IntT n where
 
 instance                   IntT     ZZ
@@ -106,75 +125,74 @@ instance NegateN (D1 n) where type Negate (D1 n) = Dn (Negate n)
 -- Addition
 
 -- Type class which actually implement addtition of natural numbers
-class AddN' n m carry where
-    type Add' n m carry :: *
+type family Add' n m carry :: *
 
 data CarryN
 data Carry0
 data Carry1
 
 -- Special cases with ZZ
-instance AddN'     ZZ     ZZ Carry0 where type Add'     ZZ     ZZ Carry0 = ZZ
-instance AddN'     ZZ (Dn n) Carry0 where type Add'     ZZ (Dn n) Carry0 = (Dn n)
-instance AddN'     ZZ (D0 n) Carry0 where type Add'     ZZ (D0 n) Carry0 = (D0 n)
-instance AddN'     ZZ (D1 n) Carry0 where type Add'     ZZ (D1 n) Carry0 = (D1 n)
-instance AddN' (Dn n)     ZZ Carry0 where type Add' (Dn n)     ZZ Carry0 = (Dn n)
-instance AddN' (D0 n)     ZZ Carry0 where type Add' (D0 n)     ZZ Carry0 = (D0 n)
-instance AddN' (D1 n)     ZZ Carry0 where type Add' (D1 n)     ZZ Carry0 = (D1 n)
+type instance Add'     ZZ     ZZ Carry0 = ZZ
+type instance Add'     ZZ (Dn n) Carry0 = (Dn n)
+type instance Add'     ZZ (D0 n) Carry0 = (D0 n)
+type instance Add'     ZZ (D1 n) Carry0 = (D1 n)
+type instance Add' (Dn n)     ZZ Carry0 = (Dn n)
+type instance Add' (D0 n)     ZZ Carry0 = (D0 n)
+type instance Add' (D1 n)     ZZ Carry0 = (D1 n)
 --
-instance AddN'     ZZ     ZZ CarryN where type Add'     ZZ     ZZ CarryN = Dn ZZ
-instance AddN'     ZZ (Dn n) CarryN where type Add'     ZZ (Dn n) CarryN = Prev (Dn n)
-instance AddN'     ZZ (D0 n) CarryN where type Add'     ZZ (D0 n) CarryN = (Dn n)
-instance AddN'     ZZ (D1 n) CarryN where type Add'     ZZ (D1 n) CarryN = (D0 n)
-instance AddN' (Dn n)     ZZ CarryN where type Add' (Dn n)     ZZ CarryN = Prev (Dn n)
-instance AddN' (D0 n)     ZZ CarryN where type Add' (D0 n)     ZZ CarryN = (Dn n)
-instance AddN' (D1 n)     ZZ CarryN where type Add' (D1 n)     ZZ CarryN = (D0 n)
+type instance Add'     ZZ     ZZ CarryN = Dn ZZ
+type instance Add'     ZZ (Dn n) CarryN = Prev (Dn n)
+type instance Add'     ZZ (D0 n) CarryN = (Dn n)
+type instance Add'     ZZ (D1 n) CarryN = (D0 n)
+type instance Add' (Dn n)     ZZ CarryN = Prev (Dn n)
+type instance Add' (D0 n)     ZZ CarryN = (Dn n)
+type instance Add' (D1 n)     ZZ CarryN = (D0 n)
 --
-instance AddN'     ZZ     ZZ Carry1 where type Add'     ZZ     ZZ Carry1 = D1 ZZ
-instance AddN'     ZZ (Dn n) Carry1 where type Add'     ZZ (Dn n) Carry1 = (D0 n)
-instance AddN'     ZZ (D0 n) Carry1 where type Add'     ZZ (D0 n) Carry1 = (D1 n)
-instance AddN'     ZZ (D1 n) Carry1 where type Add'     ZZ (D1 n) Carry1 = Next (D1 n)
-instance AddN' (Dn n)     ZZ Carry1 where type Add' (Dn n)     ZZ Carry1 = (D0 n)
-instance AddN' (D0 n)     ZZ Carry1 where type Add' (D0 n)     ZZ Carry1 = (D1 n)
-instance AddN' (D1 n)     ZZ Carry1 where type Add' (D1 n)     ZZ Carry1 = Next (D1 n)
+type instance Add'     ZZ     ZZ Carry1 = D1 ZZ
+type instance Add'     ZZ (Dn n) Carry1 = (D0 n)
+type instance Add'     ZZ (D0 n) Carry1 = (D1 n)
+type instance Add'     ZZ (D1 n) Carry1 = Next (D1 n)
+type instance Add' (Dn n)     ZZ Carry1 = (D0 n)
+type instance Add' (D0 n)     ZZ Carry1 = (D1 n)
+type instance Add' (D1 n)     ZZ Carry1 = Next (D1 n)
 
 -- == General recursion ==
 -- No carry
-instance AddN' (Dn n) (Dn m) Carry0 where type Add' (Dn n) (Dn m) Carry0 = D1 (Add' n m CarryN)
-instance AddN' (D0 n) (Dn m) Carry0 where type Add' (D0 n) (Dn m) Carry0 = Dn (Add' n m Carry0)
-instance AddN' (D1 n) (Dn m) Carry0 where type Add' (D1 n) (Dn m) Carry0 = D0 (Add' n m Carry0)
+type instance Add' (Dn n) (Dn m) Carry0 = D1 (Add' n m CarryN)
+type instance Add' (D0 n) (Dn m) Carry0 = Dn (Add' n m Carry0)
+type instance Add' (D1 n) (Dn m) Carry0 = D0 (Add' n m Carry0)
 --
-instance AddN' (Dn n) (D0 m) Carry0 where type Add' (Dn n) (D0 m) Carry0 = Dn (Add' n m Carry0)
-instance AddN' (D0 n) (D0 m) Carry0 where type Add' (D0 n) (D0 m) Carry0 = D0 (Add' n m Carry0)
-instance AddN' (D1 n) (D0 m) Carry0 where type Add' (D1 n) (D0 m) Carry0 = D1 (Add' n m Carry0)
+type instance Add' (Dn n) (D0 m) Carry0 = Dn (Add' n m Carry0)
+type instance Add' (D0 n) (D0 m) Carry0 = D0 (Add' n m Carry0)
+type instance Add' (D1 n) (D0 m) Carry0 = D1 (Add' n m Carry0)
 --
-instance AddN' (Dn n) (D1 m) Carry0 where type Add' (Dn n) (D1 m) Carry0 = D0 (Add' n m Carry0)
-instance AddN' (D0 n) (D1 m) Carry0 where type Add' (D0 n) (D1 m) Carry0 = D1 (Add' n m Carry0)
-instance AddN' (D1 n) (D1 m) Carry0 where type Add' (D1 n) (D1 m) Carry0 = Dn (Add' n m Carry1)
+type instance Add' (Dn n) (D1 m) Carry0 = D0 (Add' n m Carry0)
+type instance Add' (D0 n) (D1 m) Carry0 = D1 (Add' n m Carry0)
+type instance Add' (D1 n) (D1 m) Carry0 = Dn (Add' n m Carry1)
 -- Carry '-'
-instance AddN' (Dn n) (Dn m) CarryN where type Add' (Dn n) (Dn m) CarryN = D0 (Add' n m CarryN)
-instance AddN' (D0 n) (Dn m) CarryN where type Add' (D0 n) (Dn m) CarryN = D1 (Add' n m CarryN)
-instance AddN' (D1 n) (Dn m) CarryN where type Add' (D1 n) (Dn m) CarryN = Dn (Add' n m Carry0)
+type instance Add' (Dn n) (Dn m) CarryN = D0 (Add' n m CarryN)
+type instance Add' (D0 n) (Dn m) CarryN = D1 (Add' n m CarryN)
+type instance Add' (D1 n) (Dn m) CarryN = Dn (Add' n m Carry0)
 --
-instance AddN' (Dn n) (D0 m) CarryN where type Add' (Dn n) (D0 m) CarryN = D1 (Add' n m CarryN)
-instance AddN' (D0 n) (D0 m) CarryN where type Add' (D0 n) (D0 m) CarryN = Dn (Add' n m Carry0)
-instance AddN' (D1 n) (D0 m) CarryN where type Add' (D1 n) (D0 m) CarryN = D0 (Add' n m Carry0)
+type instance Add' (Dn n) (D0 m) CarryN = D1 (Add' n m CarryN)
+type instance Add' (D0 n) (D0 m) CarryN = Dn (Add' n m Carry0)
+type instance Add' (D1 n) (D0 m) CarryN = D0 (Add' n m Carry0)
 --
-instance AddN' (Dn n) (D1 m) CarryN where type Add' (Dn n) (D1 m) CarryN = Dn (Add' n m Carry0)
-instance AddN' (D0 n) (D1 m) CarryN where type Add' (D0 n) (D1 m) CarryN = D0 (Add' n m Carry0)
-instance AddN' (D1 n) (D1 m) CarryN where type Add' (D1 n) (D1 m) CarryN = D1 (Add' n m Carry0)
+type instance Add' (Dn n) (D1 m) CarryN = Dn (Add' n m Carry0)
+type instance Add' (D0 n) (D1 m) CarryN = D0 (Add' n m Carry0)
+type instance Add' (D1 n) (D1 m) CarryN = D1 (Add' n m Carry0)
 -- Carry '+'
-instance AddN' (Dn n) (Dn m) Carry1 where type Add' (Dn n) (Dn m) Carry1 = Dn (Add' n m Carry0)
-instance AddN' (D0 n) (Dn m) Carry1 where type Add' (D0 n) (Dn m) Carry1 = D0 (Add' n m Carry0)
-instance AddN' (D1 n) (Dn m) Carry1 where type Add' (D1 n) (Dn m) Carry1 = D1 (Add' n m Carry0)
+type instance Add' (Dn n) (Dn m) Carry1 = Dn (Add' n m Carry0)
+type instance Add' (D0 n) (Dn m) Carry1 = D0 (Add' n m Carry0)
+type instance Add' (D1 n) (Dn m) Carry1 = D1 (Add' n m Carry0)
 --
-instance AddN' (Dn n) (D0 m) Carry1 where type Add' (Dn n) (D0 m) Carry1 = D0 (Add' n m Carry0)
-instance AddN' (D0 n) (D0 m) Carry1 where type Add' (D0 n) (D0 m) Carry1 = D1 (Add' n m Carry0)
-instance AddN' (D1 n) (D0 m) Carry1 where type Add' (D1 n) (D0 m) Carry1 = Dn (Add' n m Carry1)
+type instance Add' (Dn n) (D0 m) Carry1 = D0 (Add' n m Carry0)
+type instance Add' (D0 n) (D0 m) Carry1 = D1 (Add' n m Carry0)
+type instance Add' (D1 n) (D0 m) Carry1 = Dn (Add' n m Carry1)
 --
-instance AddN' (Dn n) (D1 m) Carry1 where type Add' (Dn n) (D1 m) Carry1 = D0 (Add' n m Carry0)
-instance AddN' (D0 n) (D1 m) Carry1 where type Add' (D0 n) (D1 m) Carry1 = D1 (Add' n m Carry1)
-instance AddN' (D1 n) (D1 m) Carry1 where type Add' (D1 n) (D1 m) Carry1 = Dn (Add' n m Carry1)
+type instance Add' (Dn n) (D1 m) Carry1 = D0 (Add' n m Carry0)
+type instance Add' (D0 n) (D1 m) Carry1 = D1 (Add' n m Carry1)
+type instance Add' (D1 n) (D1 m) Carry1 = Dn (Add' n m Carry1)
 
 -- Instances for AddN
 instance                               AddN     ZZ     ZZ where type Add     ZZ     ZZ = ZZ
@@ -184,8 +202,7 @@ instance (IntT (D1 n))              => AddN     ZZ (D1 n) where type Add     ZZ 
 instance (IntT (Dn n))              => AddN (Dn n)     ZZ where type Add (Dn n)     ZZ = (Dn n)
 instance (IntT (D0 n))              => AddN (D0 n)     ZZ where type Add (D0 n)     ZZ = (D0 n)
 instance (IntT (D1 n))              => AddN (D1 n)     ZZ where type Add (D1 n)     ZZ = (D1 n)
-
-
+--
 instance (IntT (Dn n), IntT (Dn m)) => AddN (Dn n) (Dn m) where type Add (Dn n) (Dn m) = Normalized (Add' (Dn n) (Dn m) Carry0)
 instance (IntT (D0 n), IntT (Dn m)) => AddN (D0 n) (Dn m) where type Add (D0 n) (Dn m) = Normalized (Add' (D0 n) (Dn m) Carry0)
 instance (IntT (D1 n), IntT (Dn m)) => AddN (D1 n) (Dn m) where type Add (D1 n) (Dn m) = Normalized (Add' (D1 n) (Dn m) Carry0)
@@ -230,6 +247,6 @@ instance (IntT (D1 n), IntT (D1 m)) => SubN (D1 n) (D1 m) where type Sub (D1 n) 
 -- Multiplication
 
 instance (IntT n)              => MulN n    ZZ  where type Mul n    ZZ  = ZZ
-instance (IntT n, IntT (Dn m)) => MulN n (Dn m) where type Mul n (Dn m) = Normalized (Add (Negate n) (D0 (Mul n m)))
+instance (IntT n, IntT (Dn m)) => MulN n (Dn m) where type Mul n (Dn m) = Normalized (Add' (Negate n) (D0 (Mul n m)) Carry0)
 instance (IntT n, IntT (D0 m)) => MulN n (D0 m) where type Mul n (D0 m) = Normalized (D0 (Mul n m))
-instance (IntT n, IntT (D1 m)) => MulN n (D1 m) where type Mul n (D1 m) = Normalized (Add         n  (D0 (Mul n m)))
+instance (IntT n, IntT (D1 m)) => MulN n (D1 m) where type Mul n (D1 m) = Normalized (Add'         n  (D0 (Mul n m)) Carry0)
