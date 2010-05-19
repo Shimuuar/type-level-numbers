@@ -1,6 +1,6 @@
 Name:           type-numbers
 Version:        0.1
-Cabal-Version:  >= 1.2
+Cabal-Version:  >= 1.6
 License:        BSD3
 License-File:   LICENSE
 Author:         Alexey Khudyakov <alexey.skladnoy@gmail.com>
