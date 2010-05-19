@@ -261,4 +261,4 @@ instance                           SubN    Z     Z  where type Sub    Z     Z  =
 
 instance (Nat n)            => MulN n    Z  where type Mul n    Z  = Z
 instance (Nat n, Nat (O m)) => MulN n (O m) where type Mul n (O m) = Normalized (O (Mul n m))
-instance (Nat n, Nat (O n)) => MulN n (I m) where type Mul n (I m) = Normalized (Add n (O (Mul n m)))
+instance (Nat n, Nat (I m)) => MulN n (I m) where type Mul n (I m) = Normalized (Add' n (O (Mul n m)) NoCarry)
