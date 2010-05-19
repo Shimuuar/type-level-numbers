@@ -9,20 +9,23 @@ Homepage:
 Category:       Type System
 Build-Type:     Simple
 Synopsis:       
-  Type level numbers (natural and signed integeger) implemented using
-  type families.
+  Type level numbers implemented using type families.
 Description:
   This is type level numbers implemented using type families. Natural
   numbers use binary encoding. With default context stack numbers up
   to 2^18-1 coudl be represented. Integer numbers use balanced ternary
   encoding.
-
+  .
   So far comparison of numbers, subtraction and multiplication of
   numbers are supported.
-  
+
+source-repository head
+  type:     hg
+  location: http://bitbucket.org/Shimuuar/type-numbers
+
 Library
-  Build-Depends:   base,
-                   template-haskell
+  Build-Depends:   base >=3 && <5,
+                   template-haskell > 2.0
   Exposed-modules: Types.Number.Classes
                    Types.Number.Nat
                    Types.Number.Int
