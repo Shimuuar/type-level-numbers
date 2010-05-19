@@ -223,7 +223,7 @@ type instance Sub'    Z     Z  NoBorrow = Z
 type instance Sub' (O n)    Z  NoBorrow = O n
 type instance Sub' (I n)    Z  NoBorrow = I n
 -- Recursion termination with carry bit
-type instance Sub' (O n)  Z      Borrow = O (Sub' n Z Borrow)
+type instance Sub' (O n)  Z      Borrow = I (Sub' n Z Borrow)
 type instance Sub' (I n)  Z      Borrow = O n
 -- Generic recursion (No carry)
 type instance Sub' (O n) (O m) NoBorrow = O (Sub' n m NoBorrow)
