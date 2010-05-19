@@ -5,13 +5,49 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TemplateHaskell       #-}
+-- |
+-- Module      : Types.Number.Nat
+-- Copyright   : Alexey Khudyakov
+-- License     : BSD3-style (see LICENSE)
+--
+-- Maintainer  : Alexey Khudyakov <alexey.skladnoy@gmail.com>
+-- Stability   : unstable
+-- Portability : unportable (GHC only)
+--
+--
+-- This is type level natural numbers. They are represented using
+-- binary encoding which means that reasonable large numbers could be
+-- represented. With default context stack depth (20) maximal number
+-- is 2^18-1 (262143).
+--
+-- > Z           = 0
+-- > I Z         = 1
+-- > O (I Z)     = 2
+-- > I (I Z)     = 3
+-- > O (O (I Z)) = 4
+-- > ...
+--
+-- It's easy to see that representation for each number is not
+-- unique. One could add any numbers of leading zeroes:
+--
+-- > I Z = I (O Z) = I (O (O Z)) = 1
+--
+-- In order to enforce uniqueness of representation only numbers
+-- without leading zeroes are members of Nat type class. This means
+-- than types are equal if and only if numbers are equal.
+--
+-- Natural numbers support comparison and following operations: Next,
+-- Prev, Add, Sub, Mul. All operations on numbers return normalized
+-- numbers.
+--
+-- Interface type classes are reexported from Types.Number.Classes
 module Types.Number.Nat ( -- * Natural numbers
-                          -- $nat
                           I
                         , O
                         , Z
                         , Nat(..)
                           -- * Template haskell utilities
+                          -- $TH
                         , natT
                         , module Types.Number.Classes
                         ) where
@@ -28,12 +64,15 @@ splitToBits x | odd x     = 1 : splitToBits rest
               | otherwise = 0 : splitToBits rest
                 where rest = x `div` 2
 
--- | Create type for natural number.
+-- $TH
+-- Here is usage example for natT:
 --
--- Usage example
 -- > n123 :: $(natT 123)
 -- > n123 = undefined
+--
 -- This require type splices which are supprted by GHC>=6.12.
+
+-- | Create type for natural number.
 natT :: Integer -> TypeQ
 natT n | n >= 0    = foldr appT [t| Z |] . map con . splitToBits $ n
        | otherwise = error "natT: negative number is supplied"
@@ -44,16 +83,8 @@ natT n | n >= 0    = foldr appT [t| Z |] . map con . splitToBits $ n
 
 ----------------------------------------------------------------
 
--- $nat
--- Natural numbers are represented using binary encoding which means
--- that reasonable large numbers could be represented. With default
--- context stack depth (20) maximal number is 2^18-1 (262143).
---
--- Binary representaion of numbers is not unique. Every number could
--- have arbitrary number of leading zeroes. To maintain uniqueness of
--- representation only numbers withoit leading zeroes are valid.
-
--- | Type class for natural numbers
+-- | Type class for natural numbers. Only numbers without leading
+-- zeroes are members of this type class.
 class TypeInt n => Nat n
 
 instance                  TypeInt       Z   where toInt _ = 0
@@ -70,25 +101,26 @@ instance TypeInt (I n) => Nat (I n)
 class    Number_Is_Denormalized a
 instance (Number_Is_Denormalized Z) => TypeInt (O Z) where
   toInt = error "quench warning"
-instance (Number_Is_Denormalized Z) => Nat (O Z)
 
 ----------------------------------------------------------------
 -- Number normalization
 
-type family   AddBit n :: *
-type instance AddBit    Z  = Z
-type instance AddBit (a b) = (O (a b))
+-- Add trailing zero bit to number. It's added only if number is not
+-- equal to zero. Actual normalization is done here.
+type family   Add0Bit n :: *
+type instance Add0Bit    Z  = Z
+type instance Add0Bit (a b) = (O (a b))
 
 type instance Normalized    Z  = Z
 type instance Normalized (I n) = I (Normalized n)
-type instance Normalized (O n) = AddBit (Normalized n)
+type instance Normalized (O n) = Add0Bit (Normalized n)
 
 ----------------------------------------------------------------
 -- Show instances.
 -- Nat contexts are used to ensure correctness of numbers.
-instance              Show    Z  where show _ = "[0]"
-instance Nat (O n) => Show (O n) where show n = "["++show (toInt n)++"]"
-instance Nat (I n) => Show (I n) where show n = "["++show (toInt n)++"]"
+instance              Show    Z  where show _ = "[0:N]"
+instance Nat (O n) => Show (O n) where show n = "["++show (toInt n)++":N]"
+instance Nat (I n) => Show (I n) where show n = "["++show (toInt n)++":N]"
 
 ----------------------------------------------------------------
 -- Next number.
@@ -99,6 +131,7 @@ instance (Nat (O n),NextN n) => NextN (O n) where type Next (O n) = I n
 
 ----------------------------------------------------------------
 -- Previous number.
+-- Normalization isn't requred too. It's done manually in (I Z) case.
 instance                             PrevN    (I Z)  where type Prev (I Z)     = Z
 instance (Nat (O n), PrevN (O n)) => PrevN (O (O n)) where type Prev (O (O n)) = I (Prev (O n))
 instance (Nat (O n), PrevN (O n)) => PrevN (I (O n)) where type Prev (I (O n)) = O (O n)
@@ -120,7 +153,6 @@ instance JoinCompare IsGreater IsEqual   where type Join IsGreater IsEqual   = I
 instance JoinCompare a         IsLesser  where type Join a         IsLesser  = IsLesser
 instance JoinCompare a         IsGreater where type Join a         IsGreater = IsGreater
 
-
 -- Instances for comparison
 instance              CompareN    Z     Z  where type Compare    Z     Z  = IsEqual
 instance Nat (O n) => CompareN (O n)    Z  where type Compare (O n)    Z  = IsGreater
@@ -138,33 +170,32 @@ instance (Nat (I n), Nat (I m)) => CompareN (I n) (I m) where type Compare (I n)
 data Carry      -- Designate carry bit
 data NoCarry    -- No carry bit in addition
 
--- Type class which actually implement addtition of natural numbers
-class AddN' n m c where
-    type Add' n m c :: *
+-- Type family which actually implement addtition of natural numbers
+type family Add' n m c :: *
 
 -- Recursion termination without carry bit. Full enumeration is
 -- required to avoid overlapping instances
-instance AddN'    Z     Z  NoCarry where type Add'    Z     Z  NoCarry = Z
-instance AddN' (O n)    Z  NoCarry where type Add' (O n)    Z  NoCarry = O n
-instance AddN' (I n)    Z  NoCarry where type Add' (I n)    Z  NoCarry = I n
-instance AddN'    Z  (O n) NoCarry where type Add'    Z  (O n) NoCarry = O n
-instance AddN'    Z  (I n) NoCarry where type Add'    Z  (I n) NoCarry = I n
+type instance Add'    Z     Z  NoCarry = Z
+type instance Add' (O n)    Z  NoCarry = O n
+type instance Add' (I n)    Z  NoCarry = I n
+type instance Add'    Z  (O n) NoCarry = O n
+type instance Add'    Z  (I n) NoCarry = I n
 -- Recursion termination with carry bit
-instance AddN'    Z     Z    Carry where type Add'    Z   Z      Carry = I Z
-instance AddN' (O n)    Z    Carry where type Add' (O n)  Z      Carry = I n
-instance AddN' (I n)    Z    Carry where type Add' (I n)  Z      Carry = Next (I n)
-instance AddN'    Z  (O n)   Carry where type Add'    Z  (O n)   Carry = I n
-instance AddN'    Z  (I n)   Carry where type Add'    Z  (I n)   Carry = Next (I n)
+type instance Add'    Z   Z      Carry = I Z
+type instance Add' (O n)  Z      Carry = I n
+type instance Add' (I n)  Z      Carry = Next (I n)
+type instance Add'    Z  (O n)   Carry = I n
+type instance Add'    Z  (I n)   Carry = Next (I n)
 -- Generic recursion (No carry)
-instance AddN' (O n) (O m) NoCarry where type Add' (O n) (O m) NoCarry = O (Add' n m NoCarry)
-instance AddN' (I n) (O m) NoCarry where type Add' (I n) (O m) NoCarry = I (Add' n m NoCarry)
-instance AddN' (O n) (I m) NoCarry where type Add' (O n) (I m) NoCarry = I (Add' n m NoCarry)
-instance AddN' (I n) (I m) NoCarry where type Add' (I n) (I m) NoCarry = O (Add' n m   Carry)
+type instance Add' (O n) (O m) NoCarry = O (Add' n m NoCarry)
+type instance Add' (I n) (O m) NoCarry = I (Add' n m NoCarry)
+type instance Add' (O n) (I m) NoCarry = I (Add' n m NoCarry)
+type instance Add' (I n) (I m) NoCarry = O (Add' n m   Carry)
 -- Generic recursion (with carry)
-instance AddN' (O n) (O m)   Carry where type Add' (O n) (O m)   Carry = I (Add' n m NoCarry)
-instance AddN' (I n) (O m)   Carry where type Add' (I n) (O m)   Carry = O (Add' n m   Carry)
-instance AddN' (O n) (I m)   Carry where type Add' (O n) (I m)   Carry = O (Add' n m   Carry)
-instance AddN' (I n) (I m)   Carry where type Add' (I n) (I m)   Carry = I (Add' n m   Carry)
+type instance Add' (O n) (O m)   Carry = I (Add' n m NoCarry)
+type instance Add' (I n) (O m)   Carry = O (Add' n m   Carry)
+type instance Add' (O n) (I m)   Carry = O (Add' n m   Carry)
+type instance Add' (I n) (I m)   Carry = I (Add' n m   Carry)
 
 -- Enumeration of all possible instances heads is required to avoid
 -- overlapping.
@@ -184,28 +215,26 @@ data Borrow     -- Designate carry bit
 data NoBorrow   -- No carry bit in addition
 
 -- Type class which actually implement addtition of natural numbers
-class SubN' n m c where
-    type Sub' n m c :: *
+type family Sub' n m c :: *
 
 -- Recursion termination without carry bit. Full enumeration is
 -- required to avoid overlapping instances
-instance SubN'    Z     Z  NoBorrow where type Sub'    Z     Z  NoBorrow = Z
-instance SubN' (O n)    Z  NoBorrow where type Sub' (O n)    Z  NoBorrow = O n
-instance SubN' (I n)    Z  NoBorrow where type Sub' (I n)    Z  NoBorrow = I n
-
+type instance Sub'    Z     Z  NoBorrow = Z
+type instance Sub' (O n)    Z  NoBorrow = O n
+type instance Sub' (I n)    Z  NoBorrow = I n
 -- Recursion termination with carry bit
-instance SubN' (O n)    Z    Borrow where type Sub' (O n)  Z      Borrow = O (Sub' n Z Borrow)
-instance SubN' (I n)    Z    Borrow where type Sub' (I n)  Z      Borrow = O n
+type instance Sub' (O n)  Z      Borrow = O (Sub' n Z Borrow)
+type instance Sub' (I n)  Z      Borrow = O n
 -- Generic recursion (No carry)
-instance SubN' (O n) (O m) NoBorrow where type Sub' (O n) (O m) NoBorrow = O (Sub' n m NoBorrow)
-instance SubN' (I n) (O m) NoBorrow where type Sub' (I n) (O m) NoBorrow = I (Sub' n m NoBorrow)
-instance SubN' (O n) (I m) NoBorrow where type Sub' (O n) (I m) NoBorrow = I (Sub' n m   Borrow)
-instance SubN' (I n) (I m) NoBorrow where type Sub' (I n) (I m) NoBorrow = O (Sub' n m NoBorrow)
+type instance Sub' (O n) (O m) NoBorrow = O (Sub' n m NoBorrow)
+type instance Sub' (I n) (O m) NoBorrow = I (Sub' n m NoBorrow)
+type instance Sub' (O n) (I m) NoBorrow = I (Sub' n m   Borrow)
+type instance Sub' (I n) (I m) NoBorrow = O (Sub' n m NoBorrow)
 -- -- Generic recursion (with carry)
-instance SubN' (O n) (O m)   Borrow where type Sub' (O n) (O m)   Borrow = I (Sub' n m   Borrow)
-instance SubN' (I n) (O m)   Borrow where type Sub' (I n) (O m)   Borrow = O (Sub' n m NoBorrow)
-instance SubN' (O n) (I m)   Borrow where type Sub' (O n) (I m)   Borrow = O (Sub' n m   Borrow)
-instance SubN' (I n) (I m)   Borrow where type Sub' (I n) (I m)   Borrow = I (Sub' n m   Borrow)
+type instance Sub' (O n) (O m)   Borrow = I (Sub' n m   Borrow)
+type instance Sub' (I n) (O m)   Borrow = O (Sub' n m NoBorrow)
+type instance Sub' (O n) (I m)   Borrow = O (Sub' n m   Borrow)
+type instance Sub' (I n) (I m)   Borrow = I (Sub' n m   Borrow)
 
 -- Enumeration of all possible instances heads is required to avoid
 -- overlapping.
