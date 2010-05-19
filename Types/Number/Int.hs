@@ -190,9 +190,9 @@ type instance Add' (Dn n) (D0 m) Carry1 = D0 (Add' n m Carry0)
 type instance Add' (D0 n) (D0 m) Carry1 = D1 (Add' n m Carry0)
 type instance Add' (D1 n) (D0 m) Carry1 = Dn (Add' n m Carry1)
 --
-type instance Add' (Dn n) (D1 m) Carry1 = D0 (Add' n m Carry0)
-type instance Add' (D0 n) (D1 m) Carry1 = D1 (Add' n m Carry1)
-type instance Add' (D1 n) (D1 m) Carry1 = Dn (Add' n m Carry1)
+type instance Add' (Dn n) (D1 m) Carry1 = D1 (Add' n m Carry0)
+type instance Add' (D0 n) (D1 m) Carry1 = Dn (Add' n m Carry1)
+type instance Add' (D1 n) (D1 m) Carry1 = D0 (Add' n m Carry1)
 
 -- Instances for AddN
 instance                               AddN     ZZ     ZZ where type Add     ZZ     ZZ = ZZ
