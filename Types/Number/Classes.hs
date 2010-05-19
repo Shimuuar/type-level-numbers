@@ -32,6 +32,8 @@ module Types.Number.Classes ( -- * Conversion to values
                             , subN
                             , MulN(..)
                             , mulN
+                            , DivN(..)
+                            , divN
                               -- * Special classes
                             , Normalized
                             ) where
@@ -66,7 +68,6 @@ instance Show IsGreater where show _  = "IsGreater"
 ----------------------------------------------------------------
 
 -- $comparing
-                              
 -- These type classes are meant to be used in contexts to ensure
 -- relations between numbers. For example:
 -- 
@@ -145,6 +146,14 @@ class MulN n m where
        
 mulN :: MulN n m => n -> m -> Mul n m
 mulN _ _ = undefined
+
+-- | Division of two numbers. 'n' and 'm' should be instances of this
+-- class only if remainder of 'n/m' is zero.
+class DivN n m where
+    type Div n m :: *
+
+divN :: DivN n m => n -> m -> Div n m
+divN _ _ = undefined
 
 ----------------------------------------------------------------
 
