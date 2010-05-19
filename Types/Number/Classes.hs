@@ -4,6 +4,17 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE UndecidableInstances  #-}
+-- |
+-- Module      : Types.Number.Classes
+-- Copyright   : Alexey Khudyakov
+-- License     : BSD3-style (see LICENSE)
+--
+-- Maintainer  : Alexey Khudyakov <alexey.skladnoy@gmail.com>
+-- Stability   : unstable
+-- Portability : unportable (GHC only)
+--
+-- This module contain interface type classes for operations with type
+-- level numbers.
 module Types.Number.Classes ( -- * Conversion to values
                               TypeInt(..)
                               -- * Comparison of numbers
@@ -49,8 +60,8 @@ class TypeInt n where
 ----------------------------------------------------------------
 
 -- | Type class for comparing two numbers. It's expected that for any
--- two valid n and m Compare n m is equal to IsLess when n<m, IsEqual
--- when n=m and IsGreater when n>m.
+-- two valid 'n' and 'm' 'Compare n m' is equal to IsLess when 'n<m', IsEqual
+-- when 'n=m' and IsGreater when 'n>m'.
 class CompareN n m where
     type Compare n m :: *
 
@@ -117,7 +128,7 @@ class PrevN n where
 prevN :: PrevN n => n -> Prev n
 prevN _ = undefined
 
--- | Negate numbers
+-- | Negate number.
 class NegateN n where
     type Negate n :: *
 
@@ -140,7 +151,7 @@ class SubN n m where
 subN :: SubN n m => n -> m -> Sub n m
 subN _ _ = undefined
 
--- | Product.
+-- | Product of two numbers.
 class MulN n m where
   type Mul n m :: *
        
