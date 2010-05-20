@@ -49,6 +49,7 @@ module Types.Number.Nat ( -- * Natural numbers
                           -- * Template haskell utilities
                           -- $TH
                         , natT
+                        , nat
                         , module Types.Number.Classes
                         ) where
 
@@ -80,6 +81,10 @@ natT n | n >= 0    = foldr appT [t| Z |] . map con . splitToBits $ n
     con 0 = [t| O |]
     con 1 = [t| I |]
     con _ = error "natT: Strange bit nor 0 nor 1"
+
+-- | Create value for type level natural. Value itself is undefined.
+nat :: Integer -> ExpQ
+nat n = sigE [|undefined|] (natT n)
 
 ----------------------------------------------------------------
 
