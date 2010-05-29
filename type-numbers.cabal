@@ -28,6 +28,7 @@ Library
                    template-haskell > 2.0
   Exposed-modules: Types.Number.Classes
                    Types.Number.Nat
+                   Types.Number.Nat.Num
                    Types.Number.Int
                    Types.Boolean
   Other-modules:   Types.Number.Nat.Types
