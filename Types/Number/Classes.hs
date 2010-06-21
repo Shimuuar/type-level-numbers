@@ -30,6 +30,9 @@ module Types.Number.Classes ( -- * Conversion to values
                             , LesserEq
                             , Greater
                             , GreaterEq
+                              -- ** Special traits
+                            , Positive
+                            , NonZero
                               -- * Arithmetic operations on numbers
                             , Next
                             , nextN
@@ -111,6 +114,12 @@ instance (Compare n m ~ IsGreater) => Greater n m
 -- Instances for LessEq and GreaterEq are trickier.
 instance (OneOfTwo (Compare n m) IsLesser  IsEqual) => LesserEq n m
 instance (OneOfTwo (Compare n m) IsGreater IsEqual) => GreaterEq n m
+
+-- | Non-zero number. For naturals it's same as positive
+class NonZero n
+
+-- | Positive number. 
+class Positive n
 
 ----------------------------------------------------------------
 

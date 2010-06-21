@@ -171,6 +171,15 @@ instance (Nat (I n), Nat (O m)) => CompareN (I n) (O m) where type Compare (I n)
 instance (Nat (I n), Nat (I m)) => CompareN (I n) (I m) where type Compare (I n) (I m) = Compare n m
 
 ----------------------------------------------------------------
+-- Positive and Non-zero numbers
+
+instance Nat (I n) => Positive (I n)
+instance Nat (O n) => Positive (O n)
+
+instance Nat (I n) => NonZero (I n)
+instance Nat (O n) => NonZero (O n)
+
+----------------------------------------------------------------
 -- Addition
 data Carry      -- Designate carry bit
 data NoCarry    -- No carry bit in addition
