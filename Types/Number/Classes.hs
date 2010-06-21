@@ -31,19 +31,19 @@ module Types.Number.Classes ( -- * Conversion to values
                             , Greater
                             , GreaterEq
                               -- * Arithmetic operations on numbers
-                            , NextN(..)
+                            , Next
                             , nextN
-                            , PrevN(..)
+                            , Prev
                             , prevN
-                            , NegateN(..)
+                            , Negate
                             , negateN
-                            , AddN(..)
+                            , Add
                             , addN
-                            , SubN(..)
+                            , Sub
                             , subN
-                            , MulN(..)
+                            , Mul
                             , mulN
-                            , DivN(..)
+                            , Div
                             , divN
                               -- * Special classes
                             , Normalized
@@ -115,55 +115,48 @@ instance (OneOfTwo (Compare n m) IsGreater IsEqual) => GreaterEq n m
 ----------------------------------------------------------------
 
 -- | Next number.
-class NextN n where
-    type Next n :: *
+type family Next n :: *
 
-nextN :: NextN n => n -> Next n
+nextN :: n -> Next n
 nextN _ = undefined
 
--- | Previous number.
-class PrevN n where
-    type Prev n :: *
+-- | Previous number
+type family Prev n :: *
 
-prevN :: PrevN n => n -> Prev n
+prevN :: n -> Prev n
 prevN _ = undefined
 
 -- | Negate number.
-class NegateN n where
-    type Negate n :: *
+type family Negate n :: *
 
-negateN :: NegateN n => n -> Negate n
+negateN :: n -> Negate n
 negateN _ = undefined
 
 ----------------------------------------------------------------
 
 -- | Sum of two numbers.
-class AddN n m where
-    type Add n m :: *
+type family  Add n m :: *
 
-addN :: AddN n m => n -> m -> Add n m
+addN :: n -> m -> Add n m
 addN _ _ = undefined
 
 -- | Difference of two numbers.
-class SubN n m where
-    type Sub n m :: *
+type family Sub n m :: *
 
-subN :: SubN n m => n -> m -> Sub n m
+subN :: n -> m -> Sub n m
 subN _ _ = undefined
 
 -- | Product of two numbers.
-class MulN n m where
-  type Mul n m :: *
+type family Mul n m :: *
        
-mulN :: MulN n m => n -> m -> Mul n m
+mulN :: n -> m -> Mul n m
 mulN _ _ = undefined
 
 -- | Division of two numbers. 'n' and 'm' should be instances of this
 -- class only if remainder of 'n/m' is zero.
-class DivN n m where
-    type Div n m :: *
+type family Div n m :: *
 
-divN :: DivN n m => n -> m -> Div n m
+divN :: n -> m -> Div n m
 divN _ _ = undefined
 
 ----------------------------------------------------------------

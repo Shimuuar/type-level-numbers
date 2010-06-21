@@ -130,18 +130,18 @@ instance Nat (I n) => Show (I n) where show n = "["++show (toInt n)++":N]"
 ----------------------------------------------------------------
 -- Next number.
 -- Number normalization is not required.
-instance                        NextN    Z  where type Next Z = I Z
-instance (Nat (I n),NextN n) => NextN (I n) where type Next (I n) = O (Next n)
-instance (Nat (O n),NextN n) => NextN (O n) where type Next (O n) = I n
+type instance Next    Z  = I Z
+type instance Next (I n) = O (Next n)
+type instance Next (O n) = I n
 
 ----------------------------------------------------------------
 -- Previous number.
 -- Normalization isn't requred too. It's done manually in (I Z) case.
-instance                             PrevN    (I Z)  where type Prev (I Z)     = Z
-instance (Nat (O n), PrevN (O n)) => PrevN (O (O n)) where type Prev (O (O n)) = I (Prev (O n))
-instance (Nat (O n), PrevN (O n)) => PrevN (I (O n)) where type Prev (I (O n)) = O (O n)
-instance (Nat (I n), PrevN (I n)) => PrevN (O (I n)) where type Prev (O (I n)) = I (Prev (I n))
-instance (Nat (I n), PrevN (I n)) => PrevN (I (I n)) where type Prev (I (I n)) = O (I n)
+type instance Prev    (I Z)   = Z
+type instance Prev (O (O n))  = I (Prev (O n))
+type instance Prev (I (O n))  = O (O n)
+type instance Prev (O (I n))  = I (Prev (I n))
+type instance Prev (I (I n))  = O (I n)
 
 
 ----------------------------------------------------------------
@@ -204,15 +204,15 @@ type instance Add' (I n) (I m)   Carry = I (Add' n m   Carry)
 
 -- Enumeration of all possible instances heads is required to avoid
 -- overlapping.
-instance (Nat (O n), Nat (O m)) => AddN (O n) (O m) where type Add (O n) (O m) = Add' (O n) (O m) NoCarry
-instance (Nat (I n), Nat (O m)) => AddN (I n) (O m) where type Add (I n) (O m) = Add' (I n) (O m) NoCarry
-instance (Nat (O n), Nat (I m)) => AddN (O n) (I m) where type Add (O n) (I m) = Add' (O n) (I m) NoCarry
-instance (Nat (I n), Nat (I m)) => AddN (I n) (I m) where type Add (I n) (I m) = Add' (I n) (I m) NoCarry
-instance (Nat (O n))            => AddN (O n)    Z  where type Add (O n)    Z  = Add' (O n)    Z  NoCarry
-instance (Nat (I n))            => AddN (I n)    Z  where type Add (I n)    Z  = Add' (I n)    Z  NoCarry
-instance (Nat (O n))            => AddN    Z  (O n) where type Add    Z  (O n) = Add'    Z  (O n) NoCarry
-instance (Nat (I n))            => AddN    Z  (I n) where type Add    Z  (I n) = Add'    Z  (I n) NoCarry
-instance                           AddN    Z     Z  where type Add    Z     Z  = Add'    Z     Z  NoCarry
+type instance Add (O n) (O m) = Normalized (Add' (O n) (O m) NoCarry)
+type instance Add (I n) (O m) = Normalized (Add' (I n) (O m) NoCarry)
+type instance Add (O n) (I m) = Normalized (Add' (O n) (I m) NoCarry)
+type instance Add (I n) (I m) = Normalized (Add' (I n) (I m) NoCarry)
+type instance Add (O n)    Z  = Normalized (Add' (O n)    Z  NoCarry)
+type instance Add (I n)    Z  = Normalized (Add' (I n)    Z  NoCarry)
+type instance Add    Z  (O n) = Normalized (Add'    Z  (O n) NoCarry)
+type instance Add    Z  (I n) = Normalized (Add'    Z  (I n) NoCarry)
+type instance Add    Z     Z  = Normalized (Add'    Z     Z  NoCarry)
 
 ----------------------------------------------------------------
 -- Subtraction
@@ -243,27 +243,18 @@ type instance Sub' (I n) (I m)   Borrow = I (Sub' n m   Borrow)
 
 -- Enumeration of all possible instances heads is required to avoid
 -- overlapping.
-instance (Nat (O n), Nat (O m)) => SubN (O n) (O m) where type Sub (O n) (O m) = Normalized (Sub' (O n) (O m) NoBorrow)
-instance (Nat (I n), Nat (O m)) => SubN (I n) (O m) where type Sub (I n) (O m) = Normalized (Sub' (I n) (O m) NoBorrow)
-instance (Nat (O n), Nat (I m)) => SubN (O n) (I m) where type Sub (O n) (I m) = Normalized (Sub' (O n) (I m) NoBorrow)
-instance (Nat (I n), Nat (I m)) => SubN (I n) (I m) where type Sub (I n) (I m) = Normalized (Sub' (I n) (I m) NoBorrow)
-instance (Nat (O n))            => SubN (O n)    Z  where type Sub (O n)    Z  = Normalized (Sub' (O n)    Z  NoBorrow)
-instance (Nat (I n))            => SubN (I n)    Z  where type Sub (I n)    Z  = Normalized (Sub' (I n)    Z  NoBorrow)
-instance                           SubN    Z     Z  where type Sub    Z     Z  = Normalized (Sub'    Z     Z  NoBorrow)
-
--- Error handling
--- instance SubN' Z    Z    Borrow where type Sub' Z  Z      Borrow = I Z
--- instance SubN' Z (O n) NoBorrow where type Sub' Z (O n) NoBorrow = O n
--- instance SubN' Z (I n) NoBorrow where type Sub' Z (I n) NoBorrow = I n
--- instance SubN' Z (O n)   Borrow where type Sub' Z (O n)   Borrow = I n
--- instance SubN' Z (I n)   Borrow where type Sub' Z (I n)   Borrow = O (Sub' Z n Borrow)
--- instance (Nat (O n))            => SubN Z (O n) where type Sub Z (O n) = Normalized (Sub'    Z  (O n) NoBorrow)
--- instance (Nat (I n))            => SubN Z (I n) where type Sub Z (I n) = Normalized (Sub'    Z  (I n) NoBorrow)
+type instance Sub (O n) (O m) = Normalized (Sub' (O n) (O m) NoBorrow)
+type instance Sub (I n) (O m) = Normalized (Sub' (I n) (O m) NoBorrow)
+type instance Sub (O n) (I m) = Normalized (Sub' (O n) (I m) NoBorrow)
+type instance Sub (I n) (I m) = Normalized (Sub' (I n) (I m) NoBorrow)
+type instance Sub (O n)    Z  = Normalized (Sub' (O n)    Z  NoBorrow)
+type instance Sub (I n)    Z  = Normalized (Sub' (I n)    Z  NoBorrow)
+type instance Sub    Z     Z  = Normalized (Sub'    Z     Z  NoBorrow)
 
 ----------------------------------------------------------------
 -- Multiplication
 ----------------------------------------------------------------
 
-instance (Nat n)            => MulN n    Z  where type Mul n    Z  = Z
-instance (Nat n, Nat (O m)) => MulN n (O m) where type Mul n (O m) = Normalized (O (Mul n m))
-instance (Nat n, Nat (I m)) => MulN n (I m) where type Mul n (I m) = Normalized (Add' n (O (Mul n m)) NoCarry)
+type instance Mul n    Z  = Z
+type instance Mul n (O m) = Normalized (O (Mul n m))
+type instance Mul n (I m) = Normalized (Add' n (O (Mul n m)) NoCarry)

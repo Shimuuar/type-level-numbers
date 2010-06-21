@@ -101,24 +101,24 @@ type instance Normalized (D1 n) = D1     (Normalized n)
 
 ----------------------------------------------------------------
 -- Next Number
-instance                NextN     ZZ where type Next     ZZ = D1 ZZ
-instance IntT (Dn n) => NextN (Dn n) where type Next (Dn n) = Normalized (D0 n)
-instance IntT (D0 n) => NextN (D0 n) where type Next (D0 n) = D1 n
-instance IntT (D1 n) => NextN (D1 n) where type Next (D1 n) = Normalized (Dn (Next n))
+type instance Next     ZZ = D1 ZZ
+type instance Next (Dn n) = Normalized (D0 n)
+type instance Next (D0 n) = D1 n
+type instance Next (D1 n) = Normalized (Dn (Next n))
 
 ----------------------------------------------------------------
 -- Previous number
-instance                PrevN     ZZ where type Prev     ZZ = Dn ZZ
-instance IntT (Dn n) => PrevN (Dn n) where type Prev (Dn n) = Normalized (D1 (Prev n))
-instance IntT (D0 n) => PrevN (D0 n) where type Prev (D0 n) = Dn n
-instance IntT (D1 n) => PrevN (D1 n) where type Prev (D1 n) = Normalized (D0 n)
+type instance Prev     ZZ = Dn ZZ
+type instance Prev (Dn n) = Normalized (D1 (Prev n))
+type instance Prev (D0 n) = Dn n
+type instance Prev (D1 n) = Normalized (D0 n)
 
 ----------------------------------------------------------------
 -- Negate number
-instance NegateN ZZ where type Negate ZZ = ZZ
-instance NegateN (Dn n) where type Negate (Dn n) = D1 (Negate n)
-instance NegateN (D0 n) where type Negate (D0 n) = D0 (Negate n)
-instance NegateN (D1 n) where type Negate (D1 n) = Dn (Negate n)
+type instance Negate    ZZ  = ZZ
+type instance Negate (Dn n) = D1 (Negate n)
+type instance Negate (D0 n) = D0 (Negate n)
+type instance Negate (D1 n) = Dn (Negate n)
 
 
 ----------------------------------------------------------------
@@ -195,25 +195,25 @@ type instance Add' (D0 n) (D1 m) Carry1 = Dn (Add' n m Carry1)
 type instance Add' (D1 n) (D1 m) Carry1 = D0 (Add' n m Carry1)
 
 -- Instances for AddN
-instance                               AddN     ZZ     ZZ where type Add     ZZ     ZZ = ZZ
-instance (IntT (Dn n))              => AddN     ZZ (Dn n) where type Add     ZZ (Dn n) = (Dn n)
-instance (IntT (D0 n))              => AddN     ZZ (D0 n) where type Add     ZZ (D0 n) = (D0 n)
-instance (IntT (D1 n))              => AddN     ZZ (D1 n) where type Add     ZZ (D1 n) = (D1 n)
-instance (IntT (Dn n))              => AddN (Dn n)     ZZ where type Add (Dn n)     ZZ = (Dn n)
-instance (IntT (D0 n))              => AddN (D0 n)     ZZ where type Add (D0 n)     ZZ = (D0 n)
-instance (IntT (D1 n))              => AddN (D1 n)     ZZ where type Add (D1 n)     ZZ = (D1 n)
+type instance Add     ZZ     ZZ = ZZ
+type instance Add     ZZ (Dn n) = Normalized (Dn n)
+type instance Add     ZZ (D0 n) = Normalized (D0 n)
+type instance Add     ZZ (D1 n) = Normalized (D1 n)
+type instance Add (Dn n)     ZZ = Normalized (Dn n)
+type instance Add (D0 n)     ZZ = Normalized (D0 n)
+type instance Add (D1 n)     ZZ = Normalized (D1 n)
 --
-instance (IntT (Dn n), IntT (Dn m)) => AddN (Dn n) (Dn m) where type Add (Dn n) (Dn m) = Normalized (Add' (Dn n) (Dn m) Carry0)
-instance (IntT (D0 n), IntT (Dn m)) => AddN (D0 n) (Dn m) where type Add (D0 n) (Dn m) = Normalized (Add' (D0 n) (Dn m) Carry0)
-instance (IntT (D1 n), IntT (Dn m)) => AddN (D1 n) (Dn m) where type Add (D1 n) (Dn m) = Normalized (Add' (D1 n) (Dn m) Carry0)
+type instance Add (Dn n) (Dn m) = Normalized (Add' (Dn n) (Dn m) Carry0)
+type instance Add (D0 n) (Dn m) = Normalized (Add' (D0 n) (Dn m) Carry0)
+type instance Add (D1 n) (Dn m) = Normalized (Add' (D1 n) (Dn m) Carry0)
 --
-instance (IntT (Dn n), IntT (D0 m)) => AddN (Dn n) (D0 m) where type Add (Dn n) (D0 m) = Normalized (Add' (Dn n) (D0 m) Carry0)
-instance (IntT (D0 n), IntT (D0 m)) => AddN (D0 n) (D0 m) where type Add (D0 n) (D0 m) = Normalized (Add' (D0 n) (D0 m) Carry0)
-instance (IntT (D1 n), IntT (D0 m)) => AddN (D1 n) (D0 m) where type Add (D1 n) (D0 m) = Normalized (Add' (D1 n) (D0 m) Carry0)
+type instance Add (Dn n) (D0 m) = Normalized (Add' (Dn n) (D0 m) Carry0)
+type instance Add (D0 n) (D0 m) = Normalized (Add' (D0 n) (D0 m) Carry0)
+type instance Add (D1 n) (D0 m) = Normalized (Add' (D1 n) (D0 m) Carry0)
 --
-instance (IntT (Dn n), IntT (D1 m)) => AddN (Dn n) (D1 m) where type Add (Dn n) (D1 m) = Normalized (Add' (Dn n) (D1 m) Carry0)
-instance (IntT (D0 n), IntT (D1 m)) => AddN (D0 n) (D1 m) where type Add (D0 n) (D1 m) = Normalized (Add' (D0 n) (D1 m) Carry0)
-instance (IntT (D1 n), IntT (D1 m)) => AddN (D1 n) (D1 m) where type Add (D1 n) (D1 m) = Normalized (Add' (D1 n) (D1 m) Carry0)
+type instance Add (Dn n) (D1 m) = Normalized (Add' (Dn n) (D1 m) Carry0)
+type instance Add (D0 n) (D1 m) = Normalized (Add' (D0 n) (D1 m) Carry0)
+type instance Add (D1 n) (D1 m) = Normalized (Add' (D1 n) (D1 m) Carry0)
 
 
 ----------------------------------------------------------------
@@ -222,31 +222,31 @@ instance (IntT (D1 n), IntT (D1 m)) => AddN (D1 n) (D1 m) where type Add (D1 n) 
 -- Subtraction is much easier since is ise defined using
 -- addition and negation
 
-instance                               SubN     ZZ     ZZ where type Sub     ZZ     ZZ = ZZ
-instance (IntT (Dn n))              => SubN     ZZ (Dn n) where type Sub     ZZ (Dn n) = Negate (Dn n)
-instance (IntT (D0 n))              => SubN     ZZ (D0 n) where type Sub     ZZ (D0 n) = Negate (D0 n)
-instance (IntT (D1 n))              => SubN     ZZ (D1 n) where type Sub     ZZ (D1 n) = Negate (D1 n)
-instance (IntT (Dn n))              => SubN (Dn n)     ZZ where type Sub (Dn n)     ZZ = (Dn n)
-instance (IntT (D0 n))              => SubN (D0 n)     ZZ where type Sub (D0 n)     ZZ = (D0 n)
-instance (IntT (D1 n))              => SubN (D1 n)     ZZ where type Sub (D1 n)     ZZ = (D1 n)
+type instance Sub     ZZ     ZZ = ZZ
+type instance Sub     ZZ (Dn n) = Negate (Dn n)
+type instance Sub     ZZ (D0 n) = Negate (D0 n)
+type instance Sub     ZZ (D1 n) = Negate (D1 n)
+type instance Sub (Dn n)     ZZ = (Dn n)
+type instance Sub (D0 n)     ZZ = (D0 n)
+type instance Sub (D1 n)     ZZ = (D1 n)
 
-instance (IntT (Dn n), IntT (Dn m)) => SubN (Dn n) (Dn m) where type Sub (Dn n) (Dn m) = Add (Dn n) (Negate (Dn m))
-instance (IntT (D0 n), IntT (Dn m)) => SubN (D0 n) (Dn m) where type Sub (D0 n) (Dn m) = Add (D0 n) (Negate (Dn m))
-instance (IntT (D1 n), IntT (Dn m)) => SubN (D1 n) (Dn m) where type Sub (D1 n) (Dn m) = Add (D1 n) (Negate (Dn m))
+type instance Sub (Dn n) (Dn m) = Add (Dn n) (Negate (Dn m))
+type instance Sub (D0 n) (Dn m) = Add (D0 n) (Negate (Dn m))
+type instance Sub (D1 n) (Dn m) = Add (D1 n) (Negate (Dn m))
 --
-instance (IntT (Dn n), IntT (D0 m)) => SubN (Dn n) (D0 m) where type Sub (Dn n) (D0 m) = Add (Dn n) (Negate (D0 m))
-instance (IntT (D0 n), IntT (D0 m)) => SubN (D0 n) (D0 m) where type Sub (D0 n) (D0 m) = Add (D0 n) (Negate (D0 m))
-instance (IntT (D1 n), IntT (D0 m)) => SubN (D1 n) (D0 m) where type Sub (D1 n) (D0 m) = Add (D1 n) (Negate (D0 m))
+type instance Sub (Dn n) (D0 m) = Add (Dn n) (Negate (D0 m))
+type instance Sub (D0 n) (D0 m) = Add (D0 n) (Negate (D0 m))
+type instance Sub (D1 n) (D0 m) = Add (D1 n) (Negate (D0 m))
 --
-instance (IntT (Dn n), IntT (D1 m)) => SubN (Dn n) (D1 m) where type Sub (Dn n) (D1 m) = Add (Dn n) (Negate (D1 m))
-instance (IntT (D0 n), IntT (D1 m)) => SubN (D0 n) (D1 m) where type Sub (D0 n) (D1 m) = Add (D0 n) (Negate (D1 m))
-instance (IntT (D1 n), IntT (D1 m)) => SubN (D1 n) (D1 m) where type Sub (D1 n) (D1 m) = Add (D1 n) (Negate (D1 m))
+type instance Sub (Dn n) (D1 m) = Add (Dn n) (Negate (D1 m))
+type instance Sub (D0 n) (D1 m) = Add (D0 n) (Negate (D1 m))
+type instance Sub (D1 n) (D1 m) = Add (D1 n) (Negate (D1 m))
 
 
 ----------------------------------------------------------------
 -- Multiplication
 
-instance (IntT n)              => MulN n    ZZ  where type Mul n    ZZ  = ZZ
-instance (IntT n, IntT (Dn m)) => MulN n (Dn m) where type Mul n (Dn m) = Normalized (Add' (Negate n) (D0 (Mul n m)) Carry0)
-instance (IntT n, IntT (D0 m)) => MulN n (D0 m) where type Mul n (D0 m) = Normalized (D0 (Mul n m))
-instance (IntT n, IntT (D1 m)) => MulN n (D1 m) where type Mul n (D1 m) = Normalized (Add'         n  (D0 (Mul n m)) Carry0)
+type instance Mul n    ZZ  = ZZ
+type instance Mul n (Dn m) = Normalized (Add' (Negate n) (D0 (Mul n m)) Carry0)
+type instance Mul n (D0 m) = Normalized (D0 (Mul n m))
+type instance Mul n (D1 m) = Normalized (Add'         n  (D0 (Mul n m)) Carry0)
