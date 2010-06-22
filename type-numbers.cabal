@@ -16,6 +16,17 @@ Description:
   to 2^18-1 coudl be represented. Integer numbers use balanced ternary
   encoding.
   .
+  Package is structured as folows:
+  .
+  * [@Types.Number.Classes@] contain generic type families such as Add
+  .
+  * [@Types.Number.Nat@] natural numbers implemented using binary encoding
+  .
+  * [@Types.Number.Int@] signed integers implemented using balanced
+    ternary encoding
+  .
+  * [@Types.Boolean@] type level booleans
+  .
   So far comparison of numbers, subtraction and multiplication of
   numbers are supported.
 
