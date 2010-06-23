@@ -13,7 +13,7 @@ Synopsis:
 Description:
   This is type level numbers implemented using type families. Natural
   numbers use binary encoding. With default context stack numbers up
-  to 2^18-1 coudl be represented. Integer numbers use balanced ternary
+  to 2^18-1 coudl be represented. Signed integer numbers use balanced ternary
   encoding.
   .
   Package is structured as folows:
