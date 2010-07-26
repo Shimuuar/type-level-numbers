@@ -62,11 +62,10 @@ class TypeInt n where
 -- Comparison
 ----------------------------------------------------------------
 
--- | Type class for comparing two numbers. It's expected that for any
+-- | Type family for comparing two numbers. It's expected that for any
 -- two valid 'n' and 'm' 'Compare n m' is equal to IsLess when 'n<m', IsEqual
 -- when 'n=m' and IsGreater when 'n>m'.
-class CompareN n m where
-    type Compare n m :: *
+type family Compare n m :: *
 
 compareN :: CompareN n m => n -> m -> Compare n m
 compareN _ _ = undefined

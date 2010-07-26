@@ -158,16 +158,16 @@ type instance Join a         IsLesser  = IsLesser
 type instance Join a         IsGreater = IsGreater
 
 -- Instances for comparison
-instance              CompareN    Z     Z  where type Compare    Z     Z  = IsEqual
-instance Nat (O n) => CompareN (O n)    Z  where type Compare (O n)    Z  = IsGreater
-instance Nat (I n) => CompareN (I n)    Z  where type Compare (I n)    Z  = IsGreater
-instance Nat (O n) => CompareN    Z  (O n) where type Compare    Z  (O n) = IsLesser
-instance Nat (I n) => CompareN    Z  (I n) where type Compare    Z  (I n) = IsLesser
+type instance Compare    Z     Z  = IsEqual
+type instance Compare (O n)    Z  = IsGreater
+type instance Compare (I n)    Z  = IsGreater
+type instance Compare    Z  (O n) = IsLesser
+type instance Compare    Z  (I n) = IsLesser
 
-instance (Nat (O n), Nat (O m)) => CompareN (O n) (O m) where type Compare (O n) (O m) = Compare n m
-instance (Nat (O n), Nat (I m)) => CompareN (O n) (I m) where type Compare (O n) (I m) = Join IsLesser  (Compare n m)
-instance (Nat (I n), Nat (O m)) => CompareN (I n) (O m) where type Compare (I n) (O m) = Join IsGreater (Compare n m)
-instance (Nat (I n), Nat (I m)) => CompareN (I n) (I m) where type Compare (I n) (I m) = Compare n m
+type instance Compare (O n) (O m) = Compare n m
+type instance Compare (O n) (I m) = Join IsLesser  (Compare n m)
+type instance Compare (I n) (O m) = Join IsGreater (Compare n m)
+type instance Compare (I n) (I m) = Compare n m
 
 ----------------------------------------------------------------
 -- Positive and Non-zero numbers
