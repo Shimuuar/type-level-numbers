@@ -18,7 +18,7 @@
 module Types.Number.Classes ( -- * Conversion to values
                               TypeInt(..)
                               -- * Comparison of numbers
-                            , CompareN(..)
+                            , Compare
                             , compareN
                               -- ** Data labels for types comparison
                             , IsLesser
@@ -67,7 +67,7 @@ class TypeInt n where
 -- when 'n=m' and IsGreater when 'n>m'.
 type family Compare n m :: *
 
-compareN :: CompareN n m => n -> m -> Compare n m
+compareN :: n -> m -> Compare n m
 compareN _ _ = undefined
 
 data IsLesser
@@ -88,7 +88,7 @@ instance Show IsGreater where show _  = "IsGreater"
 -- > someFunction = ...
 --
 -- They have generic instances and every number which is instance of
--- CompareN type class is instance of these type classes.
+-- Compare type family is instance of these type classes.
 
 -- | Numbers n and m are instances of this class if and only is n < m.
 class Lesser n m
