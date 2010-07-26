@@ -197,9 +197,9 @@ type instance Add'    Z  (I n) NoCarry = I n
 -- Recursion termination with carry bit
 type instance Add'    Z   Z      Carry = I Z
 type instance Add' (O n)  Z      Carry = I n
-type instance Add' (I n)  Z      Carry = Next (I n)
+type instance Add' (I n)  Z      Carry = Add' (I n) (I Z) NoCarry
 type instance Add'    Z  (O n)   Carry = I n
-type instance Add'    Z  (I n)   Carry = Next (I n)
+type instance Add'    Z  (I n)   Carry = Add' (I n) (I Z) NoCarry
 -- Generic recursion (No carry)
 type instance Add' (O n) (O m) NoCarry = O (Add' n m NoCarry)
 type instance Add' (I n) (O m) NoCarry = I (Add' n m NoCarry)
