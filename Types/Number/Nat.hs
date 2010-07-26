@@ -149,14 +149,13 @@ type instance Prev (I (I n))  = O (I n)
 
 -- Join compare results. a is result of comparison of low digits b is
 -- result of comparion of higher digits.
-class JoinCompare a b where
-    type Join a b :: *
+type family Join a b :: *
 
-instance JoinCompare IsLesser  IsEqual   where type Join IsLesser  IsEqual   = IsLesser
-instance JoinCompare IsEqual   IsEqual   where type Join IsEqual   IsEqual   = IsEqual
-instance JoinCompare IsGreater IsEqual   where type Join IsGreater IsEqual   = IsGreater
-instance JoinCompare a         IsLesser  where type Join a         IsLesser  = IsLesser
-instance JoinCompare a         IsGreater where type Join a         IsGreater = IsGreater
+type instance Join IsLesser  IsEqual   = IsLesser
+type instance Join IsEqual   IsEqual   = IsEqual
+type instance Join IsGreater IsEqual   = IsGreater
+type instance Join a         IsLesser  = IsLesser
+type instance Join a         IsGreater = IsGreater
 
 -- Instances for comparison
 instance              CompareN    Z     Z  where type Compare    Z     Z  = IsEqual
