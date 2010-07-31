@@ -54,38 +54,22 @@ module TypeLevel.Number.Nat ( -- * Natural numbers
                         , module TypeLevel.Number.Classes
                         ) where
 
+import Data.Word (Word8,Word16,Word32,Word64)
+import Data.Int  (Int8, Int16, Int32, Int64 )
+
+
 import Language.Haskell.TH
 
 import TypeLevel.Number.Classes
 import TypeLevel.Number.Nat.Types
+import TypeLevel.Number.Nat.TH
 import TypeLevel.Reify
-
-splitToBits :: Integer -> [Int]
-splitToBits 0 = []
-splitToBits x | odd x     = 1 : splitToBits rest
-              | otherwise = 0 : splitToBits rest
-                where rest = x `div` 2
 
 -- $TH
 -- Here is usage example for natT:
 --
 -- > n123 :: $(natT 123)
 -- > n123 = undefined
---
--- This require type splices which are supprted by GHC>=6.12.
-
--- | Create type for natural number.
-natT :: Integer -> TypeQ
-natT n | n >= 0    = foldr appT [t| Z |] . map con . splitToBits $ n
-       | otherwise = error "natT: negative number is supplied"
-  where
-    con 0 = [t| O |]
-    con 1 = [t| I |]
-    con _ = error "natT: Strange bit nor 0 nor 1"
-
--- | Create value for type level natural. Value itself is undefined.
-nat :: Integer -> ExpQ
-nat n = sigE [|undefined|] (natT n)
 
 ----------------------------------------------------------------
 
@@ -128,6 +112,45 @@ instance                Reify    Z  Int where witness = Witness 0
 instance (Nat (O n)) => Reify (O n) Int where witness = Witness $ toInt (undefined :: O n)
 instance (Nat (I n)) => Reify (I n) Int where witness = Witness $ toInt (undefined :: I n)
 
+-- To Word8
+instance                                              Reify    Z  Word8 where witness = Witness 0
+instance (Nat (O n), (O n) `Lesser` $(natT 0x100)) => Reify (O n) Word8 where witness = Witness $ toInt (undefined :: O n)
+instance (Nat (I n), (I n) `Lesser` $(natT 0x100)) => Reify (I n) Word8 where witness = Witness $ toInt (undefined :: I n)
+
+-- To Word16
+instance                                                Reify    Z  Word16 where witness = Witness 0
+instance (Nat (O n), (O n) `Lesser` $(natT 0x10000)) => Reify (O n) Word16 where witness = Witness $ toInt (undefined :: O n)
+instance (Nat (I n), (I n) `Lesser` $(natT 0x10000)) => Reify (I n) Word16 where witness = Witness $ toInt (undefined :: I n)
+
+-- To Word32 (No checks. Won't to default centext stack length)
+instance                Reify    Z  Word32 where witness = Witness 0
+instance (Nat (O n)) => Reify (O n) Word32 where witness = Witness $ toInt (undefined :: O n)
+instance (Nat (I n)) => Reify (I n) Word32 where witness = Witness $ toInt (undefined :: I n)
+
+-- To Word64 (No checks. Won't to default centext stack length)
+instance                Reify    Z  Word64 where witness = Witness 0
+instance (Nat (O n)) => Reify (O n) Word64 where witness = Witness $ toInt (undefined :: O n)
+instance (Nat (I n)) => Reify (I n) Word64 where witness = Witness $ toInt (undefined :: I n)
+
+-- To Int8
+instance                                             Reify    Z  Int8 where witness = Witness 0
+instance (Nat (O n), (O n) `Lesser` $(natT 0x80)) => Reify (O n) Int8 where witness = Witness $ toInt (undefined :: O n)
+instance (Nat (I n), (I n) `Lesser` $(natT 0x80)) => Reify (I n) Int8 where witness = Witness $ toInt (undefined :: I n)
+
+-- To Int16
+instance                                               Reify    Z  Int16 where witness = Witness 0
+instance (Nat (O n), (O n) `Lesser` $(natT 0x8000)) => Reify (O n) Int16 where witness = Witness $ toInt (undefined :: O n)
+instance (Nat (I n), (I n) `Lesser` $(natT 0x8000)) => Reify (I n) Int16 where witness = Witness $ toInt (undefined :: I n)
+
+-- To Int32 (No checks. Won't to default centext stack length)
+instance                Reify    Z  Int32 where witness = Witness 0
+instance (Nat (O n)) => Reify (O n) Int32 where witness = Witness $ toInt (undefined :: O n)
+instance (Nat (I n)) => Reify (I n) Int32 where witness = Witness $ toInt (undefined :: I n)
+
+-- To Int64 (No checks. Won't to default centext stack length)
+instance                Reify    Z  Int64 where witness = Witness 0
+instance (Nat (O n)) => Reify (O n) Int64 where witness = Witness $ toInt (undefined :: O n)
+instance (Nat (I n)) => Reify (I n) Int64 where witness = Witness $ toInt (undefined :: I n)
 
 ----------------------------------------------------------------
 -- Number normalization

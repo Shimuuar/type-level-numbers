@@ -44,5 +44,6 @@ Library
                    TypeLevel.Boolean
                    TypeLevel.Reify
   Other-modules:   TypeLevel.Number.Nat.Types
+                   TypeLevel.Number.Nat.TH
                    TypeLevel.Number.Int.Types
                    TypeLevel.Util
