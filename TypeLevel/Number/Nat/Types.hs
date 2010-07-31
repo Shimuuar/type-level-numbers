@@ -1,8 +1,8 @@
 {-# LANGUAGE EmptyDataDecls #-}
 module TypeLevel.Number.Nat.Types ( I
-                              , O
-                              , Z
-                              ) where
+                                  , O
+                                  , Z
+                                  ) where
 
 -- | One bit.
 data I n
