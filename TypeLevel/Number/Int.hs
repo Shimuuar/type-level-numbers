@@ -5,6 +5,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TemplateHaskell       #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
 -- |
 -- Module      : TypeLevel.Number.Int
 -- Copyright   : Alexey Khudyakov
@@ -56,36 +57,36 @@ intT = foldr appT [t| ZZ |] . map con . splitToTrits
 
 ----------------------------------------------------------------
 --
-instance TypeInt     ZZ  where toInt _ =  0
-instance TypeInt (D1 ZZ) where toInt _ =  1
-instance TypeInt (Dn ZZ) where toInt _ = -1
-
-instance TypeInt (Dn n) => TypeInt (Dn (Dn n)) where toInt n = -1 + 3 * toInt' n
-instance TypeInt (Dn n) => TypeInt (D0 (Dn n)) where toInt n =  0 + 3 * toInt' n
-instance TypeInt (Dn n) => TypeInt (D1 (Dn n)) where toInt n =  1 + 3 * toInt' n
-instance TypeInt (D0 n) => TypeInt (Dn (D0 n)) where toInt n = -1 + 3 * toInt' n
-instance TypeInt (D0 n) => TypeInt (D0 (D0 n)) where toInt n =  0 + 3 * toInt' n
-instance TypeInt (D0 n) => TypeInt (D1 (D0 n)) where toInt n =  1 + 3 * toInt' n
-instance TypeInt (D1 n) => TypeInt (Dn (D1 n)) where toInt n = -1 + 3 * toInt' n
-instance TypeInt (D1 n) => TypeInt (D0 (D1 n)) where toInt n =  0 + 3 * toInt' n
-instance TypeInt (D1 n) => TypeInt (D1 (D1 n)) where toInt n =  1 + 3 * toInt' n
-
-toInt' :: (TypeInt a, Integral i) => t a -> i
-toInt' = toInt . cdr
 
 -- | Type class for type level integers. Only numbers without leading
 -- zeroes are members of the class.
 class IntT n where
+  -- | Convert natural number to integral value. It's not checked
+  -- whether value could be represented.
+  toInt :: Integral i => n -> i
 
-instance                   IntT     ZZ
-instance TypeInt (Dn n) => IntT (Dn n)
-instance TypeInt (D0 n) => IntT (D0 n)
-instance TypeInt (D1 n) => IntT (D1 n)
+instance IntT     ZZ  where toInt _ =  0
+instance IntT (D1 ZZ) where toInt _ =  1
+instance IntT (Dn ZZ) where toInt _ = -1
 
-instance                   Show       ZZ   where show _ = "[0]:Z"
-instance TypeInt (Dn n) => Show (Dn n) where show n = "["++show (toInt n)++":Z]"
-instance TypeInt (D0 n) => Show (D0 n) where show n = "["++show (toInt n)++":Z]"
-instance TypeInt (D1 n) => Show (D1 n) where show n = "["++show (toInt n)++":Z]"
+instance IntT (Dn n) => IntT (Dn (Dn n)) where toInt n = -1 + 3 * toInt' n
+instance IntT (Dn n) => IntT (D0 (Dn n)) where toInt n =  0 + 3 * toInt' n
+instance IntT (Dn n) => IntT (D1 (Dn n)) where toInt n =  1 + 3 * toInt' n
+instance IntT (D0 n) => IntT (Dn (D0 n)) where toInt n = -1 + 3 * toInt' n
+instance IntT (D0 n) => IntT (D0 (D0 n)) where toInt n =  0 + 3 * toInt' n
+instance IntT (D0 n) => IntT (D1 (D0 n)) where toInt n =  1 + 3 * toInt' n
+instance IntT (D1 n) => IntT (Dn (D1 n)) where toInt n = -1 + 3 * toInt' n
+instance IntT (D1 n) => IntT (D0 (D1 n)) where toInt n =  0 + 3 * toInt' n
+instance IntT (D1 n) => IntT (D1 (D1 n)) where toInt n =  1 + 3 * toInt' n
+
+toInt' :: (IntT n, Integral i) => t n -> i
+toInt' = toInt . cdr
+
+
+instance                Show    ZZ  where show _ = "[0:Z]"
+instance IntT (Dn n) => Show (Dn n) where show n = "["++show (toInt n)++":Z]"
+instance IntT (D0 n) => Show (D0 n) where show n = "["++show (toInt n)++":Z]"
+instance IntT (D1 n) => Show (D1 n) where show n = "["++show (toInt n)++":Z]"
 
 ----------------------------------------------------------------
 -- Number normalization
