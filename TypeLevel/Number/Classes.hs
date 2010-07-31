@@ -83,6 +83,7 @@ instance Show IsGreater where show _  = "IsGreater"
 -- Compare type family is instance of these type classes.
 -- 
 -- These instance could have problems. They weren't exensively tested.
+-- Also error messages are really unhelpful.
 
 -- | Numbers n and m are instances of this class if and only is n < m.
 class Lesser n m
