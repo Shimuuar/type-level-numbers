@@ -15,48 +15,40 @@
 --
 -- This module contain interface type classes for operations with type
 -- level numbers.
-module TypeLevel.Number.Classes ( -- * Conversion to values
-                              TypeInt(..)
-                              -- * Comparison of numbers
-                            , Compare
-                            , compareN
-                              -- ** Data labels for types comparison
-                            , IsLesser
-                            , IsEqual
-                            , IsGreater
-                              -- ** Specialized type classes
-                              -- $comparing
-                            , Lesser
-                            , LesserEq
-                            , Greater
-                            , GreaterEq
-                              -- ** Special traits
-                            , Positive
-                            , NonZero
-                              -- * Arithmetic operations on numbers
-                            , Next
-                            , nextN
-                            , Prev
-                            , prevN
-                            , Negate
-                            , negateN
-                            , Add
-                            , addN
-                            , Sub
-                            , subN
-                            , Mul
-                            , mulN
-                            , Div
-                            , divN
-                              -- * Special classes
-                            , Normalized
-                            ) where
-
--- | Type class for conversion type level integral numbers to value
--- level numbers.
-class TypeInt n where
-    -- | This function is expected to be completely lazy in its argument.
-    toInt :: Integral i => n -> i
+module TypeLevel.Number.Classes ( -- * Comparison of numbers
+                                  Compare
+                                , compareN
+                                  -- ** Data labels for types comparison
+                                , IsLesser
+                                , IsEqual
+                                , IsGreater
+                                  -- ** Specialized type classes
+                                  -- $comparing
+                                , Lesser
+                                , LesserEq
+                                , Greater
+                                , GreaterEq
+                                  -- ** Special traits
+                                , Positive
+                                , NonZero
+                                  -- * Arithmetic operations on numbers
+                                , Next
+                                , nextN
+                                , Prev
+                                , prevN
+                                , Negate
+                                , negateN
+                                , Add
+                                , addN
+                                , Sub
+                                , subN
+                                , Mul
+                                , mulN
+                                , Div
+                                , divN
+                                  -- * Special classes
+                                , Normalized
+                                ) where
 
 ----------------------------------------------------------------
 -- Comparison
