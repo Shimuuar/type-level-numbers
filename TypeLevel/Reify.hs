@@ -13,6 +13,7 @@ module TypeLevel.Reify ( Witness(..)
 
 
 data Witness t a = Witness { getValue :: a }
+                   deriving Show
 
 -- | Convert type level into value level using 
 class Reify t a where
