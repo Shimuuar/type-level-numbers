@@ -1,4 +1,4 @@
-module Types.Util ( cdr 
+module TypeLevel.Util ( cdr 
                   ) where
 
 cdr :: t a -> a

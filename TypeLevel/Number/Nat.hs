@@ -6,7 +6,7 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TemplateHaskell       #-}
 -- |
--- Module      : Types.Number.Nat
+-- Module      : TypeLevel.Number.Nat
 -- Copyright   : Alexey Khudyakov
 -- License     : BSD3-style (see LICENSE)
 --
@@ -40,8 +40,8 @@
 -- Prev, Add, Sub, Mul. All operations on numbers return normalized
 -- numbers.
 --
--- Interface type classes are reexported from Types.Number.Classes
-module Types.Number.Nat ( -- * Natural numbers
+-- Interface type classes are reexported from TypeLevel.Number.Classes
+module TypeLevel.Number.Nat ( -- * Natural numbers
                           I
                         , O
                         , Z
@@ -50,14 +50,14 @@ module Types.Number.Nat ( -- * Natural numbers
                           -- $TH
                         , natT
                         , nat
-                        , module Types.Number.Classes
+                        , module TypeLevel.Number.Classes
                         ) where
 
 import Language.Haskell.TH
 
-import Types.Number.Classes
-import Types.Number.Nat.Types
-import Types.Util
+import TypeLevel.Number.Classes
+import TypeLevel.Number.Nat.Types
+import TypeLevel.Util
 
 splitToBits :: Integer -> [Int]
 splitToBits 0 = []

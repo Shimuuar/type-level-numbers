@@ -6,7 +6,7 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TemplateHaskell       #-}
 -- |
--- Module      : Types.Number.Int
+-- Module      : TypeLevel.Number.Int
 -- Copyright   : Alexey Khudyakov
 -- License     : BSD3-style (see LICENSE)
 --
@@ -19,7 +19,7 @@
 --
 -- Currently following operations are supported: Next, Prev, Add, Sub,
 -- Mul.
-module Types.Number.Int ( -- * Integer numbers
+module TypeLevel.Number.Int ( -- * Integer numbers
                           ZZ
                         , Dn
                         , D0
@@ -27,14 +27,14 @@ module Types.Number.Int ( -- * Integer numbers
                         , IntT
                           -- * Template haskell utilities
                         , intT
-                        , module Types.Number.Classes
+                        , module TypeLevel.Number.Classes
                         ) where
 
 import Language.Haskell.TH
 
-import Types.Number.Classes
-import Types.Number.Int.Types
-import Types.Util
+import TypeLevel.Number.Classes
+import TypeLevel.Number.Int.Types
+import TypeLevel.Util
 
 
 splitToTrits :: Integer -> [Int]

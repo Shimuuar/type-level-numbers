@@ -1,6 +1,6 @@
 {-# LANGUAGE TypeFamilies   #-}
 {-# LANGUAGE EmptyDataDecls #-}
-module Types.Boolean ( True
+module TypeLevel.Boolean ( True
                      , False
                        -- * Boolean operations
                      , Not

@@ -1,7 +1,7 @@
 {-# LANGUAGE TemplateHaskell #-}
-module Types.Number.Nat.Num where
+module TypeLevel.Number.Nat.Num where
 
-import Types.Number.Nat
+import TypeLevel.Number.Nat
 
 type N0 = $(natT 0)
 type N1 = $(natT 1)

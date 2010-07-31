@@ -4,8 +4,8 @@ module TestNat where
 import Language.Haskell.TH
 import Text.Printf
 
-import Types.Number.Nat
-import Types.Number.Int
+import TypeLevel.Number.Nat
+import TypeLevel.Number.Int
 
 text :: Bool -> String
 text flag = if flag then "OK" else "Failed"

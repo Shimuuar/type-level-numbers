@@ -5,7 +5,7 @@
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE UndecidableInstances  #-}
 -- |
--- Module      : Types.Number.Classes
+-- Module      : TypeLevel.Number.Classes
 -- Copyright   : Alexey Khudyakov
 -- License     : BSD3-style (see LICENSE)
 --
@@ -15,7 +15,7 @@
 --
 -- This module contain interface type classes for operations with type
 -- level numbers.
-module Types.Number.Classes ( -- * Conversion to values
+module TypeLevel.Number.Classes ( -- * Conversion to values
                               TypeInt(..)
                               -- * Comparison of numbers
                             , Compare

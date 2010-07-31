@@ -1,5 +1,5 @@
 {-# LANGUAGE EmptyDataDecls #-}
-module Types.Number.Nat.Types ( I
+module TypeLevel.Number.Nat.Types ( I
                               , O
                               , Z
                               ) where

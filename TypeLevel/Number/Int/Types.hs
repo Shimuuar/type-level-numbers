@@ -1,5 +1,5 @@
 {-# LANGUAGE EmptyDataDecls #-}
-module Types.Number.Int.Types where
+module TypeLevel.Number.Int.Types where
   
 -- | Digit -1
 data Dn n

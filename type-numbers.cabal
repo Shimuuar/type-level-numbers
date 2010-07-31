@@ -18,14 +18,14 @@ Description:
   .
   Package is structured as folows:
   .
-  * [@Types.Number.Classes@] contain generic type families such as Add
+  * [@TypeLevel.Number.Classes@] contain generic type families such as Add
   .
-  * [@Types.Number.Nat@] natural numbers implemented using binary encoding
+  * [@TypeLevel.Number.Nat@] natural numbers implemented using binary encoding
   .
-  * [@Types.Number.Int@] signed integers implemented using balanced
+  * [@TypeLevel.Number.Int@] signed integers implemented using balanced
     ternary encoding
   .
-  * [@Types.Boolean@] type level booleans
+  * [@TypeLevel.Boolean@] type level booleans
   .
   So far comparison of numbers, subtraction and multiplication of
   numbers are supported.
@@ -37,11 +37,11 @@ source-repository head
 Library
   Build-Depends:   base >=3 && <5,
                    template-haskell > 2.0
-  Exposed-modules: Types.Number.Classes
-                   Types.Number.Nat
-                   Types.Number.Nat.Num
-                   Types.Number.Int
-                   Types.Boolean
-  Other-modules:   Types.Number.Nat.Types
-                   Types.Number.Int.Types
-                   Types.Util
+  Exposed-modules: TypeLevel.Number.Classes
+                   TypeLevel.Number.Nat
+                   TypeLevel.Number.Nat.Num
+                   TypeLevel.Number.Int
+                   TypeLevel.Boolean
+  Other-modules:   TypeLevel.Number.Nat.Types
+                   TypeLevel.Number.Int.Types
+                   TypeLevel.Util
