@@ -1,5 +1,6 @@
-{-# LANGUAGE TypeFamilies   #-}
-{-# LANGUAGE EmptyDataDecls #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE EmptyDataDecls        #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
 module TypeLevel.Boolean ( True
                      , False
                        -- * Boolean operations
@@ -13,6 +14,7 @@ module TypeLevel.Boolean ( True
                      , xorT
                      ) where
 
+import TypeLevel.Reify
 
 -- | Data type for truth
 data True
@@ -21,6 +23,9 @@ data False
 
 instance Show False where show _ = "False"
 instance Show True  where show _ = "True"
+
+instance Reify True  Bool where witness = Witness True
+instance Reify False Bool where witness = Witness False
 
 ----------------------------------------------------------------
 -- | Negation
