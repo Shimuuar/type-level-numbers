@@ -5,6 +5,7 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TemplateHaskell       #-}
+{-# LANGUAGE ScopedTypeVariables   #-}
 -- |
 -- Module      : TypeLevel.Number.Nat
 -- Copyright   : Alexey Khudyakov
@@ -57,7 +58,7 @@ import Language.Haskell.TH
 
 import TypeLevel.Number.Classes
 import TypeLevel.Number.Nat.Types
-import TypeLevel.Util
+import TypeLevel.Reify
 
 splitToBits :: Integer -> [Int]
 splitToBits 0 = []
@@ -90,22 +91,43 @@ nat n = sigE [|undefined|] (natT n)
 
 -- | Type class for natural numbers. Only numbers without leading
 -- zeroes are members of this type class.
-class TypeInt n => Nat n
+class Nat n where
+  -- | Convert natural number to integral value. It's not checked
+  -- whether value could be represented.
+  toInt :: Integral i => n -> i
 
-instance                  TypeInt       Z   where toInt _ = 0
-instance                  TypeInt    (I Z)  where toInt _ = 1
-instance TypeInt (O n) => TypeInt (O (O n)) where toInt n = 0 + 2 * toInt (cdr n)
-instance TypeInt (O n) => TypeInt (I (O n)) where toInt n = 1 + 2 * toInt (cdr n)
-instance TypeInt (I n) => TypeInt (O (I n)) where toInt n = 0 + 2 * toInt (cdr n)
-instance TypeInt (I n) => TypeInt (I (I n)) where toInt n = 1 + 2 * toInt (cdr n)
+-- | Type class for positive natural numbers. It's synonym for
+-- Positive and Nat.
+class Pos n
 
-instance                  Nat    Z
-instance TypeInt (O n) => Nat (O n)
-instance TypeInt (I n) => Nat (I n)
--- Error reporting
+instance              Nat       Z   where toInt _ = 0
+instance              Nat    (I Z)  where toInt _ = 1
+instance Nat (O n) => Nat (O (O n)) where toInt n = 0 + 2 * toInt (undefined :: (O n))
+instance Nat (O n) => Nat (I (O n)) where toInt n = 1 + 2 * toInt (undefined :: (O n))
+instance Nat (I n) => Nat (O (I n)) where toInt n = 0 + 2 * toInt (undefined :: (I n))
+instance Nat (I n) => Nat (I (I n)) where toInt n = 1 + 2 * toInt (undefined :: (I n))
+-- Error reporting. Stop for denormalized numbers
 class    Number_Is_Denormalized a
-instance (Number_Is_Denormalized Z) => TypeInt (O Z) where
+instance (Number_Is_Denormalized Z) => Nat (O Z) where
   toInt = error "quench warning"
+
+-- Synonym for positive
+instance (Nat n, Positive n) => Pos n
+
+
+----------------------------------------------------------------
+-- Data conversion
+
+-- To Integer
+instance                Reify    Z  Integer where witness = Witness 0
+instance (Nat (O n)) => Reify (O n) Integer where witness = Witness $ toInt (undefined :: O n)
+instance (Nat (I n)) => Reify (I n) Integer where witness = Witness $ toInt (undefined :: I n)
+
+-- To Int
+instance                Reify    Z  Int where witness = Witness 0
+instance (Nat (O n)) => Reify (O n) Int where witness = Witness $ toInt (undefined :: O n)
+instance (Nat (I n)) => Reify (I n) Int where witness = Witness $ toInt (undefined :: I n)
+
 
 ----------------------------------------------------------------
 -- Number normalization
