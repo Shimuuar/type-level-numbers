@@ -224,8 +224,8 @@ type instance Add    Z     Z  = Normalized (Add'    Z     Z  NoCarry)
 
 ----------------------------------------------------------------
 -- Subtraction
-data Borrow     -- Designate carry bit
-data NoBorrow   -- No carry bit in addition
+data Borrow     -- Borrow bit
+data NoBorrow   -- Do not borrow bit
 
 -- Type class which actually implement addtition of natural numbers
 type family Sub' n m c :: *
