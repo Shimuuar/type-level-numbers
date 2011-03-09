@@ -1,5 +1,5 @@
 Name:           type-level-numbers
-Version:        0.1
+Version:        0.1.0.1
 Cabal-Version:  >= 1.6
 License:        BSD3
 License-File:   LICENSE
@@ -29,6 +29,11 @@ Description:
   .
   So far comparison of numbers, subtraction and multiplication of
   numbers are supported.
+  .
+  Changes in 0.1.0.1:
+  .
+  * Workaround for GHC bug #4364 (Build failure on GHC7.0)
+
 
 source-repository head
   type:     hg
