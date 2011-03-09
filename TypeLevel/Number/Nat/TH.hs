@@ -16,11 +16,11 @@ splitToBits x | odd x     = 1 : splitToBits rest
 
 -- | Create type for natural number.
 natT :: Integer -> TypeQ
-natT n | n >= 0    = foldr appT [t| Z |] . map con . splitToBits $ n
+natT n | n >= 0    = foldr appT (conT ''Z) . map con . splitToBits $ n
        | otherwise = error "natT: negative number is supplied"
   where
-    con 0 = [t| O |]
-    con 1 = [t| I |]
+    con 0 = conT ''O
+    con 1 = conT ''I
     con _ = error "natT: Strange bit nor 0 nor 1"
 
 -- | Create value for type level natural. Value itself is undefined.
