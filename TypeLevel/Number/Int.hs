@@ -48,12 +48,12 @@ splitToTrits x | n == 0 =  0 : splitToTrits  rest
 
 -- | Generate type for integer number.
 intT :: Integer -> TypeQ
-intT = foldr appT [t| ZZ |] . map con . splitToTrits
+intT = foldr appT (conT ''ZZ) . map con . splitToTrits
   where
-    con (-1) = [t| Dn |]
-    con   0 = [t| D0 |]
-    con   1 = [t| D1 |]
-    con   x = error $ "Strange trit: " ++ show x
+    con (-1) = conT ''Dn
+    con   0  = conT ''D0
+    con   1  = conT ''D1
+    con   x  = error $ "Strange trit: " ++ show x
 
 ----------------------------------------------------------------
 --
