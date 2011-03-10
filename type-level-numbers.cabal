@@ -1,5 +1,5 @@
 Name:           type-level-numbers
-Version:        0.1.0.1
+Version:        0.1.0.2
 Cabal-Version:  >= 1.6
 License:        BSD3
 License-File:   LICENSE
@@ -33,7 +33,10 @@ Description:
   Changes in 0.1.0.1:
   .
   * Workaround for GHC bug #4364 (Build failure on GHC7.0)
-
+  .
+  Changes in 0.1.0.2:
+  .
+  * Fix URL in cabal file
 
 source-repository head
   type:     hg
