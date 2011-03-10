@@ -37,7 +37,7 @@ Description:
 
 source-repository head
   type:     hg
-  location: http://bitbucket.org/Shimuuar/type-numbers
+  location: http://bitbucket.org/Shimuuar/type-level-numbers
 
 Library
   Build-Depends:   base >=3 && <5,
