@@ -25,7 +25,7 @@ module TypeLevel.Number.Int ( -- * Integer numbers
                         , Dn
                         , D0
                         , D1
-                        , IntT
+                        , IntT(..)
                           -- * Template haskell utilities
                         , intT
                         , module TypeLevel.Number.Classes
