@@ -6,6 +6,7 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TemplateHaskell       #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
+{-# LANGUAGE TypeOperators         #-}
 -- |
 -- Module      : TypeLevel.Number.Nat
 -- Copyright   : Alexey Khudyakov

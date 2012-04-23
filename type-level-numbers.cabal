@@ -1,13 +1,5 @@
 Name:           type-level-numbers
-Version:        0.1.0.2
-Cabal-Version:  >= 1.6
-License:        BSD3
-License-File:   LICENSE
-Author:         Alexey Khudyakov <alexey.skladnoy@gmail.com>
-Maintainer:     Alexey Khudyakov <alexey.skladnoy@gmail.com>
-Homepage:       
-Category:       Type System
-Build-Type:     Simple
+Version:        0.1.0.3
 Synopsis:       
   Type level numbers implemented using type families.
 Description:
@@ -30,17 +22,35 @@ Description:
   So far comparison of numbers, subtraction and multiplication of
   numbers are supported.
   .
-  Changes in 0.1.0.1:
+  Changes in 0.1.0.3
   .
-  * Workaround for GHC bug #4364 (Build failure on GHC7.0)
+  * Fix build for GHC 7.4
   .
   Changes in 0.1.0.2:
   .
   * Fix URL in cabal file
+  .
+  Changes in 0.1.0.1:
+  .
+  * Workaround for GHC bug #4364 (Build failure on GHC 7.0)
+
+Cabal-Version:  >= 1.6
+License:        BSD3
+License-File:   LICENSE
+Bug-reports:    https://github.com/bos/statistics/issues
+Author:         Alexey Khudyakov <alexey.skladnoy@gmail.com>
+Maintainer:     Alexey Khudyakov <alexey.skladnoy@gmail.com>
+Homepage:       
+Category:       Type System
+Build-Type:     Simple
 
 source-repository head
   type:     hg
   location: http://bitbucket.org/Shimuuar/type-level-numbers
+source-repository head
+  type:     git
+  location: https://github.com/Shimuuar/type-level-numbers
+
 
 Library
   Build-Depends:   base >=3 && <5,
