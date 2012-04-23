@@ -58,9 +58,6 @@ module TypeLevel.Number.Nat ( -- * Natural numbers
 import Data.Word (Word8,Word16,Word32,Word64)
 import Data.Int  (Int8, Int16, Int32, Int64 )
 
-
-import Language.Haskell.TH
-
 import TypeLevel.Number.Classes
 import TypeLevel.Number.Nat.Types
 import TypeLevel.Number.Nat.TH
@@ -87,10 +84,10 @@ class Pos n
 
 instance              Nat       Z   where toInt _ = 0
 instance              Nat    (I Z)  where toInt _ = 1
-instance Nat (O n) => Nat (O (O n)) where toInt n = 0 + 2 * toInt (undefined :: (O n))
-instance Nat (O n) => Nat (I (O n)) where toInt n = 1 + 2 * toInt (undefined :: (O n))
-instance Nat (I n) => Nat (O (I n)) where toInt n = 0 + 2 * toInt (undefined :: (I n))
-instance Nat (I n) => Nat (I (I n)) where toInt n = 1 + 2 * toInt (undefined :: (I n))
+instance Nat (O n) => Nat (O (O n)) where toInt _ = 0 + 2 * toInt (undefined :: (O n))
+instance Nat (O n) => Nat (I (O n)) where toInt _ = 1 + 2 * toInt (undefined :: (O n))
+instance Nat (I n) => Nat (O (I n)) where toInt _ = 0 + 2 * toInt (undefined :: (I n))
+instance Nat (I n) => Nat (I (I n)) where toInt _ = 1 + 2 * toInt (undefined :: (I n))
 -- Error reporting. Stop for denormalized numbers
 class    Number_Is_Denormalized a
 instance (Number_Is_Denormalized Z) => Nat (O Z) where
