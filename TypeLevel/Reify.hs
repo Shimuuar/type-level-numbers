@@ -1,4 +1,5 @@
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE DeriveDataTypeable    #-}
 -- |
 -- Module      : TypeLevel.Reify
 -- Copyright   : Alexey Khudyakov
@@ -11,9 +12,12 @@ module TypeLevel.Reify ( Witness(..)
                        , Reify(..)
                        ) where
 
+import Data.Data (Data,Typeable)
 
+
+-- | Value with type tag
 data Witness t a = Witness { getValue :: a }
-                   deriving Show
+                   deriving (Show,Eq,Typeable,Data)
 
 -- | Convert type level into value level using 
 class Reify t a where
