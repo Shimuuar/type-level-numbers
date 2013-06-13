@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC  -fno-warn-orphans #-}
+
 {-# LANGUAGE EmptyDataDecls        #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE FlexibleContexts      #-}
@@ -43,8 +45,9 @@ splitToTrits 0 = []
 splitToTrits x | n == 0 =  0 : splitToTrits  rest
                | n == 1 =  1 : splitToTrits  rest
                | n == 2 = -1 : splitToTrits (rest + 1)
-                 where
-                   (rest,n) = divMod x 3
+               where
+                 (rest,n) = divMod x 3
+splitToTrits _ = error "Internal error"
 
 -- | Generate type for integer number.
 intT :: Integer -> TypeQ

@@ -53,7 +53,7 @@ source-repository head
 
 
 Library
-  ghc-options:     -Wall -fno-warn-orphans
+  ghc-options:     -Wall
   Build-Depends:   base >=3 && <5,
                    template-haskell > 2.0
   Exposed-modules: TypeLevel.Number.Classes

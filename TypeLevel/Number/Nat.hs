@@ -1,3 +1,5 @@
+{-# OPTIONS_GHC  -fno-warn-orphans #-}
+
 {-# LANGUAGE EmptyDataDecls        #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE FlexibleContexts      #-}
