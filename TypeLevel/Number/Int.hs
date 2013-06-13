@@ -1,5 +1,8 @@
 {-# OPTIONS_GHC  -fno-warn-orphans #-}
 
+{-# LANGUAGE DeriveDataTypeable    #-}
+{-# LANGUAGE GADTs                 #-}
+{-# LANGUAGE RankNTypes            #-}
 {-# LANGUAGE EmptyDataDecls        #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE FlexibleContexts      #-}
@@ -28,11 +31,15 @@ module TypeLevel.Number.Int ( -- * Integer numbers
                         , D0
                         , D1
                         , IntT(..)
+                          -- ** Lifting
+                        , SomeInt
+                        , withInt
                           -- * Template haskell utilities
                         , intT
                         , module TypeLevel.Number.Classes
                         ) where
 
+import Data.Typeable (Typeable)
 import Language.Haskell.TH
 
 import TypeLevel.Number.Classes
@@ -90,6 +97,48 @@ instance                Show    ZZ  where show _ = "[0:Z]"
 instance IntT (Dn n) => Show (Dn n) where show n = "["++show (toInt n :: Integer)++":Z]"
 instance IntT (D0 n) => Show (D0 n) where show n = "["++show (toInt n :: Integer)++":Z]"
 instance IntT (D1 n) => Show (D1 n) where show n = "["++show (toInt n :: Integer)++":Z]"
+
+
+-- | Some natural number
+data SomeInt where
+  SomeInt :: IntT n => n -> SomeInt
+  deriving Typeable
+
+instance Show SomeInt where
+  showsPrec d (SomeInt n) = showParen (d > 10) $
+    showString "withInt SomeInt " . shows (toInt n :: Integer)
+
+
+
+-- | Apply function which could work with any 'Nat' value only know at runtime.
+withInt :: forall i a. (Integral i) => (forall n. IntT n => n -> a) -> i -> a
+withInt f i0
+  | i0 == 0   = f (undefined :: ZZ)
+  | otherwise = cont (fromIntegral i0) f f f
+  where
+    cont :: Integer -> (forall n m. (IntT n, n ~ Dn m) => n -> a)
+                    -> (forall n m. (IntT n, n ~ D0 m) => n -> a)
+                    -> (forall n m. (IntT n, n ~ D1 m) => n -> a) -> a
+    cont (-1) kN _  _  = kN (undefined :: Dn ZZ)
+    cont   1  _  _  k1 = k1 (undefined :: D1 ZZ)
+    cont   i  kN k0 k1 = cont i' kN' k0' k1'
+      where
+        (i',bit) = case divMod i 3 of
+                     (x,2) -> (x+1,-1)
+                     x     -> x
+        kN' :: forall n m. (IntT n, n ~ Dn m) => n -> a
+        kN' _ | bit == -1 = kN (undefined :: Dn n)
+              | bit ==  0 = k0 (undefined :: D0 n)
+              | otherwise = k1 (undefined :: D1 n)
+        k0' :: forall n m. (IntT n, n ~ D0 m) => n -> a
+        k0' _ | bit == -1 = kN (undefined :: Dn n)
+              | bit ==  0 = k0 (undefined :: D0 n)
+              | otherwise = k1 (undefined :: D1 n)
+
+        k1' :: forall n m. (IntT n, n ~ D1 m) => n -> a
+        k1' _ | bit == -1 = kN (undefined :: Dn n)
+              | bit ==  0 = k0 (undefined :: D0 n)
+              | otherwise = k1 (undefined :: D1 n)
 
 ----------------------------------------------------------------
 -- Number normalization

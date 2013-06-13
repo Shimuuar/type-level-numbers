@@ -1,8 +1,5 @@
 {-# LANGUAGE TemplateHaskell #-}
-module TypeLevel.Number.Nat.TH ( nat
-                               , natT
-                               ) where
-
+module TypeLevel.Number.Nat.TH where
 
 import Language.Haskell.TH
 import TypeLevel.Number.Nat.Types

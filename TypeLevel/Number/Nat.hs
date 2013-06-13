@@ -1,5 +1,6 @@
 {-# OPTIONS_GHC  -fno-warn-orphans #-}
 
+{-# LANGUAGE GADTs                 #-}
 {-# LANGUAGE EmptyDataDecls        #-}
 {-# LANGUAGE FlexibleInstances     #-}
 {-# LANGUAGE FlexibleContexts      #-}
@@ -9,6 +10,8 @@
 {-# LANGUAGE TemplateHaskell       #-}
 {-# LANGUAGE ScopedTypeVariables   #-}
 {-# LANGUAGE TypeOperators         #-}
+{-# LANGUAGE RankNTypes            #-}
+{-# LANGUAGE DeriveDataTypeable    #-}
 -- |
 -- Module      : TypeLevel.Number.Nat
 -- Copyright   : Alexey Khudyakov
@@ -50,6 +53,9 @@ module TypeLevel.Number.Nat ( -- * Natural numbers
                         , O
                         , Z
                         , Nat(..)
+                          -- ** Lifting
+                        , SomeNat(..)
+                        , withNat
                           -- * Template haskell utilities
                           -- $TH
                         , natT
@@ -57,8 +63,9 @@ module TypeLevel.Number.Nat ( -- * Natural numbers
                         , module TypeLevel.Number.Classes
                         ) where
 
-import Data.Word (Word8,Word16,Word32,Word64)
-import Data.Int  (Int8, Int16, Int32, Int64 )
+import Data.Word     (Word8,Word16,Word32,Word64)
+import Data.Int      (Int8, Int16, Int32, Int64 )
+import Data.Typeable (Typeable)
 
 import TypeLevel.Number.Classes
 import TypeLevel.Number.Nat.Types
@@ -97,6 +104,38 @@ instance (Number_Is_Denormalized Z) => Nat (O Z) where
 
 -- Synonym for positive
 instance (Nat n, Positive n) => Pos n
+
+
+-- | Some natural number
+data SomeNat where
+  SomeNat :: Nat n => n -> SomeNat
+  deriving Typeable
+
+instance Show SomeNat where
+  showsPrec d (SomeNat n) = showParen (d > 10) $
+    showString "withNat SomeNat " . shows (toInt n :: Integer)
+
+
+
+-- | Apply function which could work with any 'Nat' value only know at runtime.
+withNat :: forall i a. (Integral i) => (forall n. Nat n => n -> a) -> i -> a
+withNat f i0
+  | i0 <  0   = error "TypeLevel.Number.Nat.withNat: negative number"
+  | i0 == 0   = f (undefined :: Z)
+  | otherwise = cont (fromIntegral i0) f f
+  where
+    cont :: Integer -> (forall n m. (Nat n, n ~ O m) => n -> a)
+                    -> (forall n m. (Nat n, n ~ I m) => n -> a) -> a
+    cont 1 _  k1 = k1 (undefined :: I Z)
+    cont i k0 k1 = cont (i `quot` 2) k0' k1'
+      where
+        k0' :: forall n m. (Nat n, n ~ O m) => n -> a
+        k0' _ | odd i     = k1 (undefined :: I n)
+              | otherwise = k0 (undefined :: O n)
+        k1' :: forall n m. (Nat n, n ~ I m) => n -> a
+        k1' _ | odd i     = k1 (undefined :: I n)
+              | otherwise = k0 (undefined :: O n)
+
 
 
 ----------------------------------------------------------------
