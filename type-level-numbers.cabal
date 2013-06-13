@@ -1,5 +1,5 @@
 Name:           type-level-numbers
-Version:        0.1.0.4
+Version:        0.1.1.0
 Synopsis:       
   Type level numbers implemented using type families.
 Description:
@@ -21,6 +21,10 @@ Description:
   .
   So far comparison of numbers, subtraction and multiplication of
   numbers are supported.
+  .
+  Changes in 0.1.1.0
+  .
+  * @withNat@, @withInt@, @SomeNat and @SomeInt@ added.
   .
   Changes in 0.1.0.3
   .
