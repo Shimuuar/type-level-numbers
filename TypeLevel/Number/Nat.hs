@@ -169,8 +169,8 @@ type instance Normalized (O n) = Add0Bit (Normalized n)
 -- Show instances.
 -- Nat contexts are used to ensure correctness of numbers.
 instance              Show    Z  where show _ = "[0:N]"
-instance Nat (O n) => Show (O n) where show n = "["++show (toInt n)++":N]"
-instance Nat (I n) => Show (I n) where show n = "["++show (toInt n)++":N]"
+instance Nat (O n) => Show (O n) where show n = "["++show (toInt n :: Integer)++":N]"
+instance Nat (I n) => Show (I n) where show n = "["++show (toInt n :: Integer)++":N]"
 
 ----------------------------------------------------------------
 -- Next number.

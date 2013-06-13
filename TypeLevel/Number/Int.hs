@@ -87,9 +87,9 @@ toInt' = toInt . cdr
 
 
 instance                Show    ZZ  where show _ = "[0:Z]"
-instance IntT (Dn n) => Show (Dn n) where show n = "["++show (toInt n)++":Z]"
-instance IntT (D0 n) => Show (D0 n) where show n = "["++show (toInt n)++":Z]"
-instance IntT (D1 n) => Show (D1 n) where show n = "["++show (toInt n)++":Z]"
+instance IntT (Dn n) => Show (Dn n) where show n = "["++show (toInt n :: Integer)++":Z]"
+instance IntT (D0 n) => Show (D0 n) where show n = "["++show (toInt n :: Integer)++":Z]"
+instance IntT (D1 n) => Show (D1 n) where show n = "["++show (toInt n :: Integer)++":Z]"
 
 ----------------------------------------------------------------
 -- Number normalization
