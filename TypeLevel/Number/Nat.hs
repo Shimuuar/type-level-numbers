@@ -198,7 +198,8 @@ instance (Nat (I n)) => Reify (I n) Int64 where witness = Witness $ toInt (undef
 -- equal to zero. Actual normalization is done here.
 type family   Add0Bit n :: *
 type instance Add0Bit    Z  = Z
-type instance Add0Bit (a b) = (O (a b))
+type instance Add0Bit (O n) = (O (O n))
+type instance Add0Bit (I n) = (O (I n))
 
 type instance Normalized    Z  = Z
 type instance Normalized (I n) = I (Normalized n)
