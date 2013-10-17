@@ -22,7 +22,7 @@ Description:
   So far comparison of numbers, subtraction and multiplication of
   numbers are supported.
 
-Cabal-Version:  >= 1.6
+Cabal-Version:  >= 1.8
 License:        BSD3
 License-File:   LICENSE
 Bug-reports:    https://github.com/bos/statistics/issues
@@ -54,3 +54,23 @@ Library
                    TypeLevel.Number.Nat.TH
                    TypeLevel.Number.Int.Types
                    TypeLevel.Util
+
+test-suite test-nat
+  type:           exitcode-stdio-1.0
+  hs-source-dirs: test
+  main-is:        nat.hs
+  other-modules:  TestNat
+  build-depends:
+    base,
+    template-haskell,
+    type-level-numbers
+
+test-suite test-int
+  type:           exitcode-stdio-1.0
+  hs-source-dirs: test
+  main-is:        int.hs
+  other-modules:  TestNat
+  build-depends:
+    base,
+    template-haskell,
+    type-level-numbers
