@@ -31,6 +31,8 @@ Maintainer:     Alexey Khudyakov <alexey.skladnoy@gmail.com>
 Homepage:       
 Category:       Type System
 Build-Type:     Simple
+extra-source-files:
+  ChangeLog
 
 source-repository head
   type:     hg
