@@ -145,7 +145,10 @@ withInt f i0
 
 type family   AddBit n :: *
 type instance AddBit    ZZ = ZZ
-type instance AddBit (a b) = D0 (a b)
+type instance AddBit (Dn a) = D0 (Dn a)
+type instance AddBit (D0 a) = D0 (D0 a)
+type instance AddBit (D1 a) = D0 (D1 a)
+
 
 type instance Normalized     ZZ = ZZ
 type instance Normalized (Dn n) = Dn     (Normalized n)
