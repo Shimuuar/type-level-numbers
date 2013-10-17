@@ -1,3 +1,10 @@
+Changes in 0.1.1.1
+
+  * Type level addition is fixed for GHC 7.6
+
+  * Test suite added to cabal file
+
+	
 Changes in 0.1.1.0
 
   * withNat, withInt, SomeNat and SomeInt added.

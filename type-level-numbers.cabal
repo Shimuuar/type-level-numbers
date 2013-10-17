@@ -1,5 +1,5 @@
 Name:           type-level-numbers
-Version:        0.1.1.0
+Version:        0.1.1.1
 Synopsis:       
   Type level numbers implemented using type families.
 Description:
