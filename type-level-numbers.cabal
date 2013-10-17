@@ -21,22 +21,6 @@ Description:
   .
   So far comparison of numbers, subtraction and multiplication of
   numbers are supported.
-  .
-  Changes in 0.1.1.0
-  .
-  * withNat, withInt, SomeNat and SomeInt added.
-  .
-  Changes in 0.1.0.3
-  .
-  * Fix build for GHC 7.4
-  .
-  Changes in 0.1.0.2:
-  .
-  * Fix URL in cabal file
-  .
-  Changes in 0.1.0.1:
-  .
-  * Workaround for GHC bug #4364 (Build failure on GHC 7.0)
 
 Cabal-Version:  >= 1.6
 License:        BSD3
