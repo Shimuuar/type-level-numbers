@@ -1,5 +1,5 @@
 Name:           type-level-numbers
-Version:        0.1.1.1
+Version:        0.1.1.2
 Synopsis:       
   Type level numbers implemented using type families.
 Description:
@@ -25,7 +25,7 @@ Description:
 Cabal-Version:  >= 1.8
 License:        BSD3
 License-File:   LICENSE
-Bug-reports:    https://github.com/bos/statistics/issues
+Bug-reports:    https://github.com/Shimuuar/type-level-numbers/issues
 Author:         Alexey Khudyakov <alexey.skladnoy@gmail.com>
 Maintainer:     Alexey Khudyakov <alexey.skladnoy@gmail.com>
 Homepage:       
@@ -34,9 +34,6 @@ Build-Type:     Simple
 extra-source-files:
   ChangeLog
 
-source-repository head
-  type:     hg
-  location: http://bitbucket.org/Shimuuar/type-level-numbers
 source-repository head
   type:     git
   location: https://github.com/Shimuuar/type-level-numbers
