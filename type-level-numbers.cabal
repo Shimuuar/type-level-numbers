@@ -22,7 +22,7 @@ Description:
   So far comparison of numbers, subtraction and multiplication of
   numbers are supported.
 
-Cabal-Version:  >= 1.8
+Cabal-Version:  >= 1.10
 License:        BSD3
 License-File:   LICENSE
 Bug-reports:    https://github.com/Shimuuar/type-level-numbers/issues
@@ -40,6 +40,7 @@ source-repository head
 
 
 Library
+  default-language: Haskell2010
   ghc-options:     -Wall
   Build-Depends:   base >=3 && <5,
                    template-haskell > 2.0
@@ -55,20 +56,22 @@ Library
                    TypeLevel.Util
 
 test-suite test-nat
-  type:           exitcode-stdio-1.0
-  hs-source-dirs: test
-  main-is:        nat.hs
-  other-modules:  TestNat
+  default-language: Haskell2010
+  type:             exitcode-stdio-1.0
+  hs-source-dirs:   test
+  main-is:          nat.hs
+  other-modules:    TestNat
   build-depends:
     base,
     template-haskell,
     type-level-numbers
 
 test-suite test-int
-  type:           exitcode-stdio-1.0
-  hs-source-dirs: test
-  main-is:        int.hs
-  other-modules:  TestNat
+  default-language: Haskell2010
+  type:             exitcode-stdio-1.0
+  hs-source-dirs:   test
+  main-is:          int.hs
+  other-modules:    TestNat
   build-depends:
     base,
     template-haskell,
