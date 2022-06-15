@@ -1,8 +1,9 @@
 {-# LANGUAGE EmptyDataDecls        #-}
-{-# LANGUAGE TypeOperators         #-}
-{-# LANGUAGE TypeFamilies          #-}
-{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE FlexibleContexts      #-}
 {-# LANGUAGE FlexibleInstances     #-}
+{-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
 -- |
 -- Module      : TypeLevel.Number.Classes
